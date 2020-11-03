@@ -11,7 +11,12 @@ function getMode(logline) {
 }
 
 function getCallsign(logline) {
-	return logline.substring(logline.indexOf("from") + 5, logline.indexOf("to"));
+	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+	if (qrz == 1) {
+		return '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+	} else {
+		return callsign;
+	}
 }
 
 function getTarget(logline) {
@@ -63,7 +68,8 @@ function getBER(logline) {
 
 
 function getAddToQSO(logline) {
-	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + getCallsign(logline) + '" onclick="copyToQSO(\'' + getCallsign(logline) + '\')">Copy</button></div>';
+	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
 	return retval;
 }
 
