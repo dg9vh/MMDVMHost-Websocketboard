@@ -99,7 +99,7 @@ function getLastHeard(document, event) {
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
-	if (event.data.indexOf("Talker Alias") < 0 && event.data.indexOf("Downlink Activate") < 9) {
+	if (event.data.indexOf("Talker Alias") < 0 && event.data.indexOf("Downlink Activate") < 0 && event.data.indexOf("network watchdog") < 0 ) {
 	$(document).ready(function() {
 		var rowIndexes = [],
 		timestamp = getTimestamp(event.data),
