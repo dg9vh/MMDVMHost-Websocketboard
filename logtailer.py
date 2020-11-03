@@ -1,21 +1,18 @@
 #!/usr/bin/python3 
 # -*- coding: utf-8 -*-
 
-#import time
 import datetime
 import os.path
 import asyncio
 import logging
 import argparse
 import websockets
-import http.server
 import socketserver
 import configparser
 import os
 from collections import deque
 from urllib.parse import urlparse, parse_qs
 from ansi2html import Ansi2HTMLConverter
-from threading import Thread
 
 current_dir = os.getcwd()
 config = configparser.ConfigParser()
