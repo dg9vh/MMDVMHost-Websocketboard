@@ -1,0 +1,14 @@
+[Unit]
+Description=Python3 logtailer for MMDVMDash
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 30
+Type=simple
+Restart=always
+# Modify for different location of Python3 or other port
+WorkingDirectory=/opt/MMDVMDash/
+ExecStart=/usr/bin/python3 /opt/MMDVMDash/logtailer.py
+
+[Install]
+WantedBy=multi-user.target

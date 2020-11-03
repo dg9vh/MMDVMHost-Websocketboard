@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="MMDVM-Dashboard by DG9VH">
+		<meta name="author" content="DG9VH">
+		<!-- So refresh works every time -->
+		<meta http-equiv="expires" content="0">
+		
+		<title>MMDVM-Dashboard by DG9VH</title>
+		
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<!-- Bootstrap core JavaScript -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<!-- Datatables -->
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="js/functions.js"></script>
+		<style>
+			nowrap {
+				white-space:nowrap
+			}
+		</style>
+		<title>DG9VH - MMDVM-Dashboard by DG9VH</title>
+	</head>
+	<body>
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+			<div class="container-fluid">
+				<span class="float:left">
+					<a class="navbar-brand" href="#">MMDVM-Dashboard by DG9VH</a>
+				</span>
+				<span class="navbar-brand float:right">Websocket-Based</span>
+			</div>
+		</nav>
+		
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="lastheard-tab" data-toggle="tab" href="#lastheard" role="tab" aria-controls="lastheard" aria-selected="true">Last Heard</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="localheard-tab" data-toggle="tab" href="#localheard" role="tab" aria-controls="localheard" aria-selected="true">Local Heard</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="lastheard" role="tabpanel" aria-labelledby="lastheard-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Last Heard List of today's callsigns.<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<!-- Tabelle -->
+						<div class="table-responsive">
+							<table id="lastHeard" class="table lastHeard table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Time (UTC)</th>
+										<th>Mode</th>
+										<th>Callsign</th>
+										<th>Target</th>
+										<th>Source</th>
+										<th>Dur (s)</th>
+										<th>Loss</th>
+										<th>BER</th>
+										<th>QSO</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="localheard" role="tabpanel" aria-labelledby="localheard-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Local Heard List of today<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<!-- Tabelle -->
+						<div class="table-responsive">
+							<table id="localHeard" class="table localHeard table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Time (UTC)</th>
+										<th>Mode</th>
+										<th>Callsign</th>
+										<th>Target</th>
+										<th>Source</th>
+										<th>Dur (s)</th>
+										<th>BER</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="qso" role="tabpanel" aria-labelledby="qso-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Currently in QSO<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+					<!-- Tabelle -->
+						<div class="table-responsive">
+							<button id="button">Delete selected row</button>
+							<table id="inQSO" class="table inQSO table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Callsign</th>
+										<th>Added at</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			var t_lh = $('#lastHeard').DataTable( {
+				"order": [[ 0, "desc" ]]
+			} );
+			
+			var t_localh = $('#localHeard').DataTable( {
+				"order": [[ 0, "desc" ]]
+			} );
+			var ws = new WebSocket("ws://" + window.location.hostname + ":5678");
+			ws.onmessage = function (event) {
+				getLastHeard(document, event);
+				getLocalHeard(document, event);
+			};
+			t_lh.order( [ 0, 'desc' ] ).draw();
+			t_localh.order( [ 0, 'desc' ] ).draw();
+			
+			
+			var t_qso = $('#inQSO').DataTable( {
+				"order": [[ 0, "asc" ]]
+			} );
+			
+			$('#inQSO tbody').on( 'click', 'tr', function () {
+				if ( $(this).hasClass('selected') ) {
+					$(this).removeClass('selected');
+				} else {
+					t_qso.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			} );
+			
+			$('#button').click( function () {
+				t_qso.row('.selected').remove().draw( false );
+			} );
+		</script>
+	</body>
+</html>
