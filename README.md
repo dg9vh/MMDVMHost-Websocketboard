@@ -17,6 +17,7 @@ Actually known:
 * change ownership to your user for example with `sudo chown -R pi /opt/MMDVMDash`
 * copy all files from repository into this folder
 * modify *logtailer.ini* to fit your needs
+* modify */js/config.js* to fit your needs
 * copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
 * modify both scripts to fit your needs
 * enable services with following commmands, this results in starting both automatically after reboot:
@@ -26,7 +27,7 @@ Actually known:
   * `sudo systemctl enable http.server.service`
   * `sudo systemctl enable logtailer.service`
 
-Finally you should be able to get the new Dashboard calling the hostname of your hotspot
+Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
 
 ## Screenshots
 ![Screenshot of MMDVMDash Websocketboard](img/Screenshot.png "Screenshot of MMDVMDash Websocketboard")
