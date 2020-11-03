@@ -30,6 +30,12 @@ def view_log(websocket, path):
     logging.info('Connected, remote={}, path={}'.format(websocket.remote_address, path))
 
     try:
+        try:
+            parse_result = urlparse(path)
+        except Exception:
+            raise ValueError('Fail to parse URL')
+
+        path = os.path.abspath(parse_result.path)
         now = datetime.datetime.now()
         year = str(now.year)
         month = str(now.month)
@@ -39,19 +45,22 @@ def view_log(websocket, path):
         if len(day) == 1:
             day = "0" + day
 
-        file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
-
+        file_path = ""
+        if path == "/MMDVM":
+            file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+        elif path == "/DAPNET":
+            file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+        logging.info(file_path)
         if not os.path.isfile(file_path):
             raise ValueError('Not found')
 
-        path = file_path
-        with open(file_path) as f:
+        with open(file_path, newline = '\n') as f:
 
             content = ''.join(deque(f, NUM_LINES))
             content = conv.convert(content, full=False)
             lines = content.split("\n")
             for line in lines:
-                if line.find('received') >0 and not line.find('network watchdog') > 0:
+                if line.find('received') >0 or line.find('Sending') > 0:
                     yield from websocket.send(line)
 
             while True:

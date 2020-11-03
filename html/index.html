@@ -50,6 +50,9 @@
 				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
 			</li>
 			<li class="nav-item">
+				<a class="nav-link" id="dapnet-tab" data-toggle="tab" href="#dapnet" role="tab" aria-controls="dapnet" aria-selected="false">DAPNET Messages</a>
+			</li>
+			<li class="nav-item">
 				<a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
 			</li>
 		</ul>
@@ -124,7 +127,27 @@
 					</div>
 				</div>
 			</div>
-			
+			<div class="tab-pane fade" id="dapnet" role="tabpanel" aria-labelledby="dapnet-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Dapnet-Messages<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<!-- Tabelle -->
+						<div class="table-responsive">
+							<table id="dapnetmessages" class="table dapnetmessages table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Time (UTC)</th>
+										<th>Slot</th>
+										<th>RIC</th>
+										<th>Message</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
 				<div class="panel panel-default">
 					<!-- Standard-Panel-Inhalt -->
@@ -145,8 +168,13 @@
 			var t_localh = $('#localHeard').DataTable( {
 				"order": [[ 0, "desc" ]]
 			} );
-			var ws = new WebSocket("ws://" + window.location.hostname + ":5678");
-			ws.onmessage = function (event) {
+			
+			var t_dapnet = $('#dapnetmessages').DataTable( {
+				"order": [[ 0, "desc" ]]
+			} );
+			
+			var ws1 = new WebSocket("ws://" + window.location.hostname + ":5678/MMDVM");
+			ws1.onmessage = function (event) {
 				getLastHeard(document, event);
 				getLocalHeard(document, event);
 			};
@@ -170,6 +198,12 @@
 			$('#button').click( function () {
 				t_qso.row('.selected').remove().draw( false );
 			} );
+			
+			var ws2 = new WebSocket("ws://" + window.location.hostname + ":5678/DAPNET");
+			ws2.onmessage = function (event) {
+				getDapnetMessages(document, event);
+			};
+			t_dapnet.order( [ 0, 'desc' ] ).draw();
 		</script>
 	</body>
 </html>

@@ -29,5 +29,9 @@ Actually known:
 
 Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
 
+## Credits
+
+*logtailer.py* is based on the work of http://shzhangji.com/blog/2017/07/15/log-tailer-with-websocket-and-python/
+
 ## Screenshots
 ![Screenshot of MMDVMDash Websocketboard](img/Screenshot.png "Screenshot of MMDVMDash Websocketboard")
