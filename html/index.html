@@ -49,6 +49,9 @@
 			<li class="nav-item">
 				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
+			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="lastheard" role="tabpanel" aria-labelledby="lastheard-tab">
@@ -106,7 +109,7 @@
 					<!-- Standard-Panel-Inhalt -->
 					<div class="panel-heading">Currently in QSO<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
 					<div class="panel-body">
-					<!-- Tabelle -->
+						<!-- Tabelle -->
 						<div class="table-responsive">
 							<button id="button">Delete selected row</button>
 							<table id="inQSO" class="table inQSO table-condensed table-striped table-hover">
@@ -118,6 +121,17 @@
 								</thead>
 							</table>
 						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">About the Dashboard<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<p>This Dashboard uses websockets-technology to transfer data from host to client. It actually uses the logfile of the MMDVMHost by G4KLX to get the entries into the different tables.</p>
+						<p>If you have any ideas or issues feel free to leave a comment/issue in <a target="_new" href="https://github.com/dg9vh/MMDVMHost-Websocketboard">github</a>.</p>
 					</div>
 				</div>
 			</div>
