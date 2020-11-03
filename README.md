@@ -7,6 +7,9 @@ Also this should improve user experience.
 
 ## Installation
 You'll need to install several python3 modules. A concrete list will follow here later.
+Actually known:
+* websockets: `sudo apt install python3-websockets`
+* ansi2html: `sudo pip3 install ansi2html`
 
 ### Installation steps
 * clone this repository to your home-directory
