@@ -69,10 +69,8 @@ def view_log(websocket, path):
                 content = f.read()
                 if content:
                     content = conv.convert(content, full=False)
-                    lines = content.split("\n")
-                    for line in lines:
-                        if line.find('received') >0 or line.find('Sending') > 0:
-                            yield from websocket.send(line)
+                    if content.find('received') >0 or content.find('Sending') > 0:
+                        yield from websocket.send(content)
                 else:
                     yield from asyncio.sleep(1)
 
