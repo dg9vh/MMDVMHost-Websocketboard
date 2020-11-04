@@ -18,7 +18,7 @@ current_dir = os.getcwd()
 config = configparser.ConfigParser()
 config.read(current_dir + '/logtailer.ini')
 
-NUM_LINES = int(config['MMDVMHost']['Num_Lines'])
+
 
 # init
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
@@ -35,6 +35,7 @@ def view_log(websocket, path):
         except Exception:
             raise ValueError('Fail to parse URL')
 
+        NUM_LINES = int(config['MMDVMHost']['Num_Lines'])
         path = os.path.abspath(parse_result.path)
         now = datetime.datetime.now()
         year = str(now.year)
@@ -50,6 +51,7 @@ def view_log(websocket, path):
             file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
         elif path == "/DAPNET":
             file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+            NUM_LINES = 0
         logging.info(file_path)
         if not os.path.isfile(file_path):
             raise ValueError('Not found')
@@ -67,7 +69,10 @@ def view_log(websocket, path):
                 content = f.read()
                 if content:
                     content = conv.convert(content, full=False)
-                    yield from websocket.send(content)
+                    lines = content.split("\n")
+                    for line in lines:
+                        if line.find('received') >0 or line.find('Sending') > 0:
+                            yield from websocket.send(line)
                 else:
                     yield from asyncio.sleep(1)
 
