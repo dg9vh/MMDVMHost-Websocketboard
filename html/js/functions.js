@@ -23,7 +23,12 @@ function getTarget(logline) {
 	if(logline.indexOf("at") > 0) {
 		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf("at"));
 	} else {
-		return logline.substring(logline.indexOf("to") + 3, logline.substring(logline.indexOf("to") + 3).indexOf(",") + logline.indexOf("to") + 3);
+		val = logline.substring(logline.indexOf("to") + 3);
+		if (val.indexOf(",") > 0) {
+			console.log(val);
+			val = val.substring(0, val.indexOf(","));
+		}
+		return val;
 	}
 }
 
@@ -164,7 +169,8 @@ function getLastHeard(document, event) {
 		lines = event.data.split("\n");
 		for (i = 0; i < lines.length; i++) {
 			var line = lines[i];
-			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("network watchdog") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("Data Header") < 0 && line.length > 0) {
+			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("network watchdog") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("Data Header") < 0 && line.indexOf("0000:") < 0&& line.length > 0) {
+				console.log(line);
 				var rowIndexes = [],
 				timestamp = getTimestamp(line),
 				mode = getMode(line),
