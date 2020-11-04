@@ -24,8 +24,8 @@ Actually known:
   * `sudo systemctl enable http.server.service`
   * `sudo systemctl enable logtailer.service`
 * start services with following commmands:
-  * `sudo systemctl enable http.server.service`
-  * `sudo systemctl enable logtailer.service`
+  * `sudo systemctl start http.server.service`
+  * `sudo systemctl start logtailer.service`
 
 Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
 
