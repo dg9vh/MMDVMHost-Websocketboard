@@ -1,0 +1,3 @@
+[submodule "html/metar.js"]
+	path = html/metar.js
+	url = https://github.com/skydivejkl/metar.js
