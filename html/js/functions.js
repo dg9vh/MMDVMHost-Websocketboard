@@ -96,6 +96,9 @@ function getMessage(logline) {
 	if (4520 == parseInt(getRIC(logline))) {
 		message = rot1(message);
 	}
+	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
+		message = message + "<br> Decoded: " + JSON.stringify(parseMETAR(message));
+	}
 	return message;
 }
 
