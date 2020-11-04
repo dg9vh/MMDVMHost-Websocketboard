@@ -76,9 +76,6 @@ function getAddToQSO(logline) {
 	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
 	return retval;
 }
-/*
-
-*/
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-03 19:33:26.411 Sending message in slot 5 to 0000224, type 6, func Alphanumeric: "YYYYMMDDHHMMSS201103203300"
@@ -100,6 +97,9 @@ function getMessage(logline) {
 	if (4520 == parseInt(getRIC(logline))) {
 		message = rot1(message);
 	}
+	if (4512 == parseInt(getRIC(logline))) {
+		message = decodeSkyperRubric(message);
+	}
 	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
 		message = message + "<br> Decoded: " + JSON.stringify(parseMETAR(message));
 	}
@@ -115,21 +115,30 @@ function chr(n) {
 }
 
 function rot1(text) {
-    ric = 0;
-    slot = 0;
-    out = "";
-    for (i = 0; i < text.length; i++) {
-        if (i == 0) {
-            ric = ord(text[i])-31;
+	ric = 0;
+	slot = 0;
+	out = "";
+	for (i = 0; i < text.length; i++) {
+		if (i == 0) {
+			ric = ord(text[i])-31;
 		}
-        if (i == 1) {
-            slot = ord(text[i])-32;
+		if (i == 1) {
+			slot = ord(text[i])-32;
 		}
-        if (i > 1) {
-            out += chr(ord(text[i])-1);
+		if (i > 1) {
+			out += chr(ord(text[i])-1);
 		}
-    }
-    return "Skyper-Rubric-No.: " + ric + ", Slot: " + slot + ", message: " + out;
+	}
+	return "Skyper-Rubric-No.: " + ric + ", Slot: " + slot + ", message: " + out;
+}
+
+function decodeSkyperRubric(rubric) {
+	ric = ord(rubric[1]) - 31;
+	name = "";
+	for (i = 3; i < rubric.length; i++) {
+		name += chr(ord(rubric[i])-1);
+	}
+	return "Skyper-Rubric Announcement: No.: " + ric + ": " + name;
 }
 
 function clocktime() {
