@@ -3,7 +3,7 @@
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 function getTimestamp(logline) {
-	return logline.substring(3,26);
+	return logline.substring(3,22);
 }
 
 function getMode(logline) {
