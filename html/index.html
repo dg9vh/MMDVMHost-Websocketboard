@@ -22,11 +22,7 @@
 		<script type="text/javascript" src="js/config.js"></script>
 		<script type="text/javascript" src="metar.js/metar.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
-		<style>
-			nowrap {
-				white-space:nowrap
-			}
-		</style>
+		<link rel="stylesheet" href="css/styles.css">
 		<title>DG9VH - MMDVM-Dashboard by DG9VH</title>
 	</head>
 	<body>
@@ -161,7 +157,11 @@
 				</div>
 			</div>
 		</div>
-		
+		<footer class="footer">
+			<div class="container">
+				<span class="text-muted">MMDVM-Dashboard by DG9VH | get your own at: <a href="https://github.com/dg9vh/MMDVMHost-Websocketboard">https://github.com/dg9vh/MMDVMHost-Websocketboard</a> | Follow me <a href="https://twitter.com/DG9VH">@DG9VH</a></span>
+			</div>
+		</footer>
 		<script>
 			var t_lh = $('#lastHeard').DataTable( {
 				"order": [[ 0, "desc" ]]
