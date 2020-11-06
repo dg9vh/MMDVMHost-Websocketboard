@@ -12,12 +12,12 @@ Actually known:
 * ansi2html: `sudo pip3 install ansi2html`
 
 ### Installation steps
-* clone this repository to your home-directory
+* clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
 * create directory with `sudo mkdir /opt/MMDVMDash`
 * change ownership to your user for example with `sudo chown -R pi /opt/MMDVMDash`
 * copy all files from repository into this folder
 * modify *logtailer.ini* to fit your needs
-* modify */js/config.js* to fit your needs
+* modify */js/config.js* to fit your needs, here you can switch on/off tabs showing or enable debug for getting some output in javascript console
 * copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
 * modify both scripts to fit your needs
 * enable services with following commmands, this results in starting both automatically after reboot:
