@@ -332,3 +332,26 @@ function getDapnetMessages(document, event) {
 		});
 	});
 }
+
+$(document).ready(function() {
+	if(showLastHeardTab == 0){
+		document.getElementById("myTab").children[0].style.display="none";
+		document.getElementById("lastheard").style.display="none";
+	}
+	if(showLocalHeadTab == 0){
+		document.getElementById("myTab").children[1].style.display="none";
+		document.getElementById("localheard").style.display="none";
+	}
+	if(showInQSOTab == 0){
+		document.getElementById("myTab").children[2].style.display="none";
+		document.getElementById("qso").style.display="none";
+	}
+	if(showDAPNETMessagesTab == 0){
+		document.getElementById("myTab").children[3].style.display="none";
+		document.getElementById("dapnet").style.display="none";
+	}
+	if(showAboutTab == 0){
+		document.getElementById("myTab").children[4].style.display="none";
+		document.getElementById("about").style.display="none";
+	}
+});
