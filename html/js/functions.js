@@ -1,7 +1,16 @@
+var messagecount = 0;
+
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
+
+function logIt(message) {
+	if (debug == 1) {
+		console.log(message);
+	}
+}
+
 function getTimestamp(logline) {
 	return logline.substring(3,22);
 }
@@ -82,7 +91,7 @@ function getAddToQSO(logline) {
 // M: 2020-11-03 19:36:00.124 Sending message in slot 13 to 0002504, type 5, func Numeric: "193600   031120"
 // M: 2020-11-03 19:36:00.165 Sending message in slot 13 to 0000200, type 6, func Alphanumeric: "XTIME=1936031120XTIME=1936031120"
 // M: 2020-11-03 19:36:00.216 Sending message in slot 13 to 0000216, type 6, func Alphanumeric: "YYYYMMDDHHMMSS201103193600"
-
+// D: 2020-11-06 18:35:00.343 Messages in Queue 0001
 function getSlot(logline) {
 	return logline.substring(logline.indexOf("slot") + 5, logline.indexOf("to ")).trim();
 }
@@ -104,6 +113,11 @@ function getMessage(logline) {
 		message = message + "<br> Decoded: " + JSON.stringify(parseMETAR(message));
 	}
 	return message;
+}
+
+function getMessagesInQueue(line) {
+	messagecount = parseInt(line.substring(45));
+	logIt("messagecount: " + messagecount);
 }
 
 function ord(str) {
@@ -175,9 +189,9 @@ function getLastHeard(document, event) {
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 	$(document).ready(function() {
 		lines = event.data.split("\n");
-		for (i = 0; i < lines.length; i++) {
-			var line = lines[i];
-			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("network watchdog") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("Data Header") < 0 && line.indexOf("0000:") < 0&& line.length > 0) {
+		lines.forEach(function(line, index, array) {
+			logIt(line);
+			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("network watchdog") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && line.indexOf("received") > 0 ) {
 				var rowIndexes = [],
 				timestamp = getTimestamp(line),
 				mode = getMode(line),
@@ -231,7 +245,7 @@ function getLastHeard(document, event) {
 					] ).draw();
 				}
 			}
-		}
+		});
 	});
 }
 
@@ -258,10 +272,11 @@ function getLocalHeard(document, event) {
 }
 
 function getDapnetMessages(document, event) {
-	lines = event.data.split("\n");
 	$(document).ready(function() {
-		for (i = 0; i < lines.length; i++) {
-			var line = lines[i];
+		lines = event.data.split("\n");
+		logIt("lines.length: " + lines.length);
+		lines.forEach(function(line, index, array) {
+			logIt(line);
 			if (line.indexOf("Sending") > 0 ) {
 				t_dapnet.row.add( [
 					getTimestamp(line),
@@ -269,7 +284,23 @@ function getDapnetMessages(document, event) {
 					getRIC(line),
 					getMessage(line)
 				] ).draw();
+				messagecount--;
+				if (messagecount < 0 ) {
+					messagecount = 0;
+				}
+				document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 			}
-		}
+			if (line.indexOf("Messages in Queue") > 0 ) {
+				 getMessagesInQueue(line);
+				 document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
+			}
+			if (line.indexOf("Rejecting") > 0 ) {
+				 messagecount--;
+				if (messagecount < 0 ) {
+					messagecount = 0;
+					document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
+				}
+			}
+		});
 	});
 }
