@@ -288,16 +288,44 @@ function getDapnetMessages(document, event) {
 				if (messagecount < 0 ) {
 					messagecount = 0;
 				}
+				if (messagecount <= warnlevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-light";
+				}
+				if (messagecount > warnlevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-warning";
+				}
+				if (messagecount > emergencylevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-danger";
+				}
 				document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 			}
 			if (line.indexOf("Messages in Queue") > 0 ) {
 				 getMessagesInQueue(line);
+				if (messagecount <= warnlevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-light";
+				}
+				if (messagecount > warnlevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-warning";
+				}
+				if (messagecount > emergencylevel) {
+					document.getElementById('messagesinqueue').className = "badge badge-danger";
+				}
 				 document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 			}
 			if (line.indexOf("Rejecting") > 0 ) {
 				 messagecount--;
 				if (messagecount < 0 ) {
 					messagecount = 0;
+					if (messagecount <= warnlevel) {
+						document.getElementById('messagesinqueue').className = "badge badge-light";
+					}
+					if (messagecount > warnlevel) {
+						document.getElementById('messagesinqueue').className = "badge badge-warning";
+					}
+					if (messagecount > emergencylevel) {
+						document.getElementById('messagesinqueue').className = "badge badge-danger";
+					}
+					
 					document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 				}
 			}
