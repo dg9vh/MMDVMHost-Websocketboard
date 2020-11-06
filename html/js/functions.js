@@ -1,5 +1,4 @@
 var messagecount = 0;
-
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
@@ -60,7 +59,7 @@ function getDuration(logline) {
 
 function getLoss(logline) {
 	if(logline.lastIndexOf("seconds") > 0) {
-		val = logline.substring(logline.lastIndexOf("seconds") + 9, logline.indexOf("%"));
+		val = logline.substring(logline.lastIndexOf("seconds") + 9, logline.indexOf("%") + 1);
 		if (val.indexOf("BER") == -1) {
 			return val;
 		} else {
