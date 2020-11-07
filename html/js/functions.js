@@ -3,6 +3,7 @@ var messagecount = 0;
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
+// M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
 
 function logIt(message) {
 	if (debug == 1) {
@@ -27,8 +28,12 @@ function getCallsign(logline) {
 	}
 }
 
+// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
+// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+// M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
+
 function getTarget(logline) {
-	if(logline.indexOf("at") > 0) {
+	if(logline.indexOf("at") > 0 && logline.indexOf("late entry") < 0 ) {
 		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf("at"));
 	} else {
 		val = logline.substring(logline.indexOf("to") + 3);
