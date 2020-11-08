@@ -259,17 +259,20 @@ function getLocalHeard(document, event) {
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 	$(document).ready(function() {
-		if (getSource(event.data) == "RF") {
-			if (getDuration(event.data) !== "") {
-				t_localh.row.add( [
-					getTimestamp(event.data),
-					getMode(event.data),
-					getCallsign(event.data),
-					getTarget(event.data),
-					getSource(event.data),
-					getDuration(event.data),
-					getBER(event.data)
-				] ).draw();
+		lines = event.data.split("\n");
+		lines.forEach(function(line, index, array)) {
+			if (getSource(line) == "RF") {
+				if (getDuration(line) !== "") {
+					t_localh.row.add( [
+						getTimestamp(line),
+						getMode(line),
+						getCallsign(line),
+						getTarget(line),
+						getSource(line),
+						getDuration(line),
+						getBER(line)
+					] ).draw();
+				}
 			}
 		}
 	});
