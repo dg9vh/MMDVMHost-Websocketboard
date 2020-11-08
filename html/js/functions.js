@@ -6,7 +6,7 @@ var messagecount = 0;
 // M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
 
 function logIt(message) {
-	if (debug == 1) {
+	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
 		console.log(message);
 	}
 }

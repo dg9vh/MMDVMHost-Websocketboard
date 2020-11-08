@@ -33,7 +33,7 @@ def view_log(websocket, path):
         try:
             parse_result = urlparse(path)
         except Exception:
-            raise ValueError('Fail to parse URL')
+            raise ValueError('Fail to parse URL', format(path))
 
         NUM_LINES = int(config['MMDVMHost']['Num_Lines'])
         path = os.path.abspath(parse_result.path)
@@ -54,9 +54,9 @@ def view_log(websocket, path):
             NUM_LINES = 0
         logging.info(file_path)
         if not os.path.isfile(file_path):
-            raise ValueError('Not found')
+            raise ValueError('File not found', format(file_path))
 
-        with open(file_path, newline = '\n') as f:
+        with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
 
             content = ''.join(deque(f, NUM_LINES))
             content = conv.convert(content, full=False)
@@ -74,7 +74,7 @@ def view_log(websocket, path):
 
     except ValueError as e:
         try:
-            yield from websocket.send('<font color="red"><strong>{}</strong></font>'.format(e))
+            yield from websocket.send('Logtailer-Errormessage: ValueError: {}'.format(e))
             yield from websocket.close()
         except Exception:
             pass
@@ -82,6 +82,11 @@ def view_log(websocket, path):
         log_close(websocket, path, e)
 
     except Exception as e:
+        try:
+            yield from websocket.send('Logtailer-Errormessage: Error: {}'.format(e))
+            yield from websocket.close()
+        except Exception:
+            pass
         log_close(websocket, path, e)
 
     else:
