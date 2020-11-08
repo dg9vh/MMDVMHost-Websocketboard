@@ -5,6 +5,19 @@ This is a very first development version of my new MMDVMDash using websockets-te
 
 Also this should improve user experience.
 
+## Technical Details
+The Dashboard persists in detail in 3 components: two on the server (Hotspot/Repeater) side and on on the browser.
+
+The two server sided components are the logtailer.py (which communicates via websocket with your browser and streams the logs to it for processing) and the webserver-component from python3 (which is serving the needed html and javascript infrastructure to your browser).
+
+The client based component is the javascript processing the streamed log lines and filling the tables.
+
+## Used Ports
+
+By default following Ports are used for running the Dashboard:
+* 8000 TCP: webservice
+* 5678 TCP: Websocket
+
 ## Installation
 You'll need to install several python3 modules. A concrete list will follow here later.
 Actually known:
