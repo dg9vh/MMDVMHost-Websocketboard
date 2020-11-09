@@ -114,7 +114,7 @@ function getMessage(logline) {
 		message = decodeSkyperRubric(message);
 	}
 	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
-		message = message + "<br> Decoded: " + JSON.stringify(parseMETAR(message));
+		message = '<a href="#" class="tooltip-test" title="' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '">' + message + '</a>';
 	}
 	return message;
 }
