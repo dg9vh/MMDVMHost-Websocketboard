@@ -260,7 +260,7 @@ function getLocalHeard(document, event) {
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 	$(document).ready(function() {
 		lines = event.data.split("\n");
-		lines.forEach(function(line, index, array)) {
+		lines.forEach(function(line, index, array) {
 			if (getSource(line) == "RF") {
 				if (getDuration(line) !== "") {
 					t_localh.row.add( [
@@ -274,7 +274,7 @@ function getLocalHeard(document, event) {
 					] ).draw();
 				}
 			}
-		}
+		});
 	});
 }
 
