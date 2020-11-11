@@ -241,7 +241,7 @@ function getLastHeard(document, event) {
 						ts2TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
 					}
 				}
-				if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0) {
+				if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0) {
 					if (getMode(line) == "DMR Slot 1" ) {
 						ts1TXing = null;
 					} else {
