@@ -1,4 +1,6 @@
 var messagecount = 0;
+var ts1TXing = null;
+var ts2TXing = null;
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
@@ -113,6 +115,7 @@ function getMessage(logline) {
 	if (4512 == parseInt(getRIC(logline))) {
 		message = decodeSkyperRubric(message);
 	}
+	
 	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
 		message = '<a href="#" class="tooltip-test" title="' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '">' + message + '</a>';
 	}
@@ -186,16 +189,69 @@ function copyToQSO(callsign) {
 	
 }
 
+function getCurrentTXing() {
+	logIt("getCurrentTXingTS1: " + ts1TXing);
+	logIt("getCurrentTXingTS2: " + ts2TXing);
+	ts1 = null;
+	ts2 = null;
+	if (ts1TXing != null) {
+		ts1 = ts1TXing.split(";");
+	}
+	if (ts2TXing != null) {
+		ts2 = ts2TXing.split(";");
+	}
+	t_ct.clear().draw();
+	if (ts1 != null) {
+		t_ct.row.add( [
+			ts1[0],
+			ts1[1],
+			ts1[2],
+			ts1[3],
+			ts1[4]
+		] ).draw();
+	}
+	if (ts2 != null) {
+		t_ct.row.add( [
+			ts2[0],
+			ts2[1],
+			ts2[2],
+			ts2[3],
+			ts2[4]
+		] ).draw();
+	}
+}
+
 function getLastHeard(document, event) {
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
+// && line.indexOf("network watchdog") < 0
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
 			logIt(line);
-			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("network watchdog") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && line.indexOf("received") > 0 ) {
+			txing = false;
+			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && line.indexOf("received") > 0 ) {
+				if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0) {
+					txing = true;
+					if (getMode(line) == "DMR Slot 1" ) {
+						ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+					} else {
+						ts2TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+					}
+				}
+				if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0) {
+					if (getMode(line) == "DMR Slot 1" ) {
+						ts1TXing = null;
+					} else {
+						ts2TXing = null;
+					}
+				}
+				logIt("TS1: " + ts1TXing);
+				logIt("TS2: " + ts2TXing);
+				getCurrentTXing();
+				
 				var rowIndexes = [],
 				timestamp = getTimestamp(line),
 				mode = getMode(line),
@@ -206,6 +262,11 @@ function getLastHeard(document, event) {
 				loss = getLoss(line),
 				ber = getBER(line),
 				addToQSO = getAddToQSO(line);
+				if (txing) {
+					duration = "TXing";
+					loss = "";
+					ber = "";
+				}
 				if (mode == "POCSAG") {
 					callsign = "POCSAG";
 					target = "";
@@ -216,13 +277,14 @@ function getLastHeard(document, event) {
 					addToQSO = "";
 				}
 				t_lh.rows( function ( idx, data, node ) {
-					if(data[2] === callsign){
+					if(data[2] == callsign){
 						rowIndexes.push(idx);
 					}
+					logIt("rowIndexes: " + rowIndexes);
 					return false;
 				});
-
 				if (rowIndexes[0]) {
+					
 					newData = [
 						timestamp,
 						mode,
@@ -234,7 +296,7 @@ function getLastHeard(document, event) {
 						ber,
 						addToQSO
 					]
-					t_lh.row(rowIndexes[0]).data( newData ).draw();
+					t_lh.row(rowIndexes[0]).data( newData ).draw(false);
 				} else {
 					t_lh.row.add( [
 						timestamp,
@@ -341,24 +403,28 @@ function getDapnetMessages(document, event) {
 }
 
 $(document).ready(function() {
-	if(showLastHeardTab == 0){
+	if(showCurrTXTab == 0){
 		document.getElementById("myTab").children[0].style.display="none";
+		document.getElementById("currtx").style.display="none";
+	}
+	if(showLastHeardTab == 0){
+		document.getElementById("myTab").children[1].style.display="none";
 		document.getElementById("lastheard").style.display="none";
 	}
 	if(showLocalHeadTab == 0){
-		document.getElementById("myTab").children[1].style.display="none";
+		document.getElementById("myTab").children[2].style.display="none";
 		document.getElementById("localheard").style.display="none";
 	}
 	if(showInQSOTab == 0){
-		document.getElementById("myTab").children[2].style.display="none";
+		document.getElementById("myTab").children[3].style.display="none";
 		document.getElementById("qso").style.display="none";
 	}
 	if(showDAPNETMessagesTab == 0){
-		document.getElementById("myTab").children[3].style.display="none";
+		document.getElementById("myTab").children[4].style.display="none";
 		document.getElementById("dapnet").style.display="none";
 	}
 	if(showAboutTab == 0){
-		document.getElementById("myTab").children[4].style.display="none";
+		document.getElementById("myTab").children[5].style.display="none";
 		document.getElementById("about").style.display="none";
 	}
 });

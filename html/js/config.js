@@ -10,6 +10,7 @@ var emergencylevel = 500;
 
 
 // 1 = show tab, 0 = suppress it
+var showCurrTXTab = 1;
 var showLastHeardTab = 1;
 var showLocalHeadTab = 1;
 var showInQSOTab = 1;

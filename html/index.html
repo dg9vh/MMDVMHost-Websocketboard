@@ -38,10 +38,13 @@
 		
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item">
-				<a class="nav-link active" id="lastheard-tab" data-toggle="tab" href="#lastheard" role="tab" aria-controls="lastheard" aria-selected="true">Last Heard</a>
+				<a class="nav-link active" id="currtx-tab" data-toggle="tab" href="#currtx" role="tab" aria-controls="currtx" aria-selected="true">Currently TXing</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" id="localheard-tab" data-toggle="tab" href="#localheard" role="tab" aria-controls="localheard" aria-selected="true">Local Heard</a>
+				<a class="nav-link" id="lastheard-tab" data-toggle="tab" href="#lastheard" role="tab" aria-controls="lastheard" aria-selected="false">Last Heard</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="localheard-tab" data-toggle="tab" href="#localheard" role="tab" aria-controls="localheard" aria-selected="false">Local Heard</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
@@ -54,7 +57,28 @@
 			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-			<div class="tab-pane fade show active" id="lastheard" role="tabpanel" aria-labelledby="lastheard-tab">
+			<div class="tab-pane fade show active" id="currtx" role="tabpanel" aria-labelledby="currtx-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Currently TXing<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<!-- Tabelle -->
+						<div class="table-responsive">
+							<table id="currTX" class="table currTX table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Mode</th>
+										<th>Callsign</th>
+										<th>Target</th>
+										<th>Source</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="lastheard" role="tabpanel" aria-labelledby="lastheard-tab">
 				<div class="panel panel-default">
 					<!-- Standard-Panel-Inhalt -->
 					<div class="panel-heading">Last Heard List of today's callsigns.<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
@@ -163,6 +187,10 @@
 			</div>
 		</footer>
 		<script>
+			var t_ct = $('#currTX').DataTable( {
+				"order": [[ 0, "asc" ]]
+			} );
+			
 			var t_lh = $('#lastHeard').DataTable( {
 				"order": [[ 0, "desc" ]]
 			} );
