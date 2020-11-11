@@ -70,7 +70,7 @@ def view_log(websocket, path):
                     content = conv.convert(content, full=False)
                     yield from websocket.send(content)
                 else:
-                    yield from asyncio.sleep(1)
+                    yield from asyncio.sleep(0.2)
 
     except ValueError as e:
         try:
