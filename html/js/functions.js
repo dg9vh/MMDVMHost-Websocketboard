@@ -1,6 +1,10 @@
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
+var ts1timestamp = null;
+var ts2timestamp = null;
+
+setInterval(getCurrentTXing, 1000);
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
@@ -190,15 +194,15 @@ function copyToQSO(callsign) {
 }
 
 function getCurrentTXing() {
-	logIt("getCurrentTXingTS1: " + ts1TXing);
-	logIt("getCurrentTXingTS2: " + ts2TXing);
 	ts1 = null;
 	ts2 = null;
 	if (ts1TXing != null) {
 		ts1 = ts1TXing.split(";");
+		ts1[4] = Math.round((Date.now() - Date.parse(ts1timestamp.replace(" ","T")+".000Z"))/1000);
 	}
 	if (ts2TXing != null) {
 		ts2 = ts2TXing.split(";");
+		ts2[4] = Math.round((Date.now() - Date.parse(ts2timestamp.replace(" ","T")+".000Z"))/1000);
 	}
 	t_ct.clear().draw();
 	if (ts1 != null) {
@@ -237,8 +241,10 @@ function getLastHeard(document, event) {
 					txing = true;
 					if (getMode(line) == "DMR Slot 1" ) {
 						ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+						ts1timestamp = getTimestamp(line);
 					} else {
 						ts2TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+						ts2timestamp = getTimestamp(line);
 					}
 				}
 				if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0) {
@@ -248,8 +254,8 @@ function getLastHeard(document, event) {
 						ts2TXing = null;
 					}
 				}
-				logIt("TS1: " + ts1TXing);
-				logIt("TS2: " + ts2TXing);
+				logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
+				logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
 				getCurrentTXing();
 				
 				var rowIndexes = [],
@@ -280,7 +286,6 @@ function getLastHeard(document, event) {
 					if(data[2] == callsign){
 						rowIndexes.push(idx);
 					}
-					logIt("rowIndexes: " + rowIndexes);
 					return false;
 				});
 				if (rowIndexes[0]) {
