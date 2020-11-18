@@ -18,7 +18,7 @@ current_dir = os.getcwd()
 config = configparser.ConfigParser()
 config.read(current_dir + '/logtailer.ini')
 
-
+dmrids = {}
 
 # init
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
@@ -27,6 +27,7 @@ conv = Ansi2HTMLConverter(inline=True)
 @asyncio.coroutine
 def view_log(websocket, path):
     global config
+    global dmrids
     logging.info('Connected, remote={}, path={}'.format(websocket.remote_address, path))
 
     try:
@@ -45,7 +46,7 @@ def view_log(websocket, path):
         day = str(now.day)
         if len(day) == 1:
             day = "0" + day
-
+        
         file_path = ""
         if path == "/MMDVM":
             file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
@@ -62,13 +63,23 @@ def view_log(websocket, path):
             content = conv.convert(content, full=False)
             lines = content.split("\n")
             for line in lines:
+                if line.find("from ") > 0 and line.find("to ") > 0:
+                    source = line[line.index("from ") + 5:line.index("to ")].strip()
+                    if source in dmrids: 
+                        line = line.replace(source, dmrids[source])
                 yield from websocket.send(line)
 
             while True:
                 content = f.read()
                 if content:
                     content = conv.convert(content, full=False)
-                    yield from websocket.send(content)
+                    lines = content.split("\n")
+                    for line in lines:
+                        if line.find("from ") > 0 and line.find("to ") > 0:
+                            source = line[line.index("from ") + 5:line.index("to ")].strip()
+                            if source in dmrids: 
+                                line = line.replace(source, dmrids[source])
+                        yield from websocket.send(line)
                 else:
                     yield from asyncio.sleep(0.2)
 
@@ -107,6 +118,19 @@ def websocketserver():
 
 
 def main():
+    dmr_id_lookup = config['MMDVMHost']['DMR_ID_Lookup']
+    dmr_id_lookupfile = config['MMDVMHost']['DMR_ID_LookupFile']
+    
+    if dmr_id_lookup == "1":
+        if not os.path.isfile(dmr_id_lookupfile):
+            raise ValueError('File not found', format(dmr_id_lookupfile))
+        
+        f = open(dmr_id_lookupfile, 'r')
+        lines = f.readlines() 
+        for line in lines:
+            tokens = line.split("\t")
+            dmrids[tokens[0]] = tokens[1]
+    logging.info("Starting Websocketserver")
     websocketserver()
 
 

@@ -27,6 +27,7 @@ Actually known:
 ### Reommendations
 * take care to set Loglevel for FileLevel = 2 in your MMDVM.ini
 * also set debug = 0 on each section to avoid irritating output on the Dashboard
+* Python3.7 at least must be instaled
 
 ### Installation steps
 * clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
@@ -45,6 +46,12 @@ Actually known:
   * `sudo systemctl start logtailer.service`
 
 Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
+
+### If using DMRHost by BrandMeister-Team
+If you are using the DMRHost as replacement for MMDVMHost you should enable DMR-ID-Lookup within logtailer.ini by setting the corresponding option = 1
+Also take care to configure the filepath to the correct location of your DMRIds.dat.
+
+For updating the DMRIds.dat you can use the script you find in scripts-folder.
 
 ## Credits
 
