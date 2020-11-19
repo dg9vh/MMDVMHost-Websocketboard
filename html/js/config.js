@@ -2,7 +2,7 @@
 var qrz = 1;
 
 // 1 = enable debug in javascript-console, 0 = 0ff
-var debug = 0;
+var debug = 1;
 
 // Set messagecounters for different badge-colors
 var warnlevel = 200;
@@ -16,3 +16,7 @@ var showLocalHeadTab = 1;
 var showInQSOTab = 1;
 var showDAPNETMessagesTab = 1;
 var showAboutTab = 1;
+
+// default-tab to show
+// chose from following list: CurrTXTab, LastHeardTab, LocalHeadTab, InQSOTab, DAPNETMessagesTab, AboutTab
+var defaultTab = "LastHeardTab";

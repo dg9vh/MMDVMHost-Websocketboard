@@ -475,4 +475,61 @@ $(document).ready(function() {
 		document.getElementById("myTab").children[5].style.display="none";
 		document.getElementById("about").style.display="none";
 	}
+	
+	switch (defaultTab) {
+		case "CurrTXTab":
+			var element = document.getElementById("currtx-tab");
+			element.classList.add("active");
+			element = document.getElementById("currtx");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "LastHeardTab":
+			var element = document.getElementById("lastheard-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("lastheard");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "LocalHeadTab":
+			var element = document.getElementById("localheard-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("localheard");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "InQSOTab":
+			var element = document.getElementById("qso-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("qso");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "DAPNETMessagesTab":
+			var element = document.getElementById("dapnet-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("dapnet");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "AboutTab":
+			var element = document.getElementById("about-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("about");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		default:
+			var element = document.getElementById("currtx-tab");
+			element.classList.add("active");
+			element = document.getElementById("currtx");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+	}
 });
