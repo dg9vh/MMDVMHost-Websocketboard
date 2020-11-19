@@ -26,7 +26,7 @@ Actually known:
 * gpiozero: `sudo apt install python3-gpiozero`
 * psutil: `sudo apt install python3-psutil`
 
-### Reommendations
+### Recommendations
 * take care to set Loglevel for FileLevel = 2 in your MMDVM.ini
 * also set debug = 0 on each section to avoid irritating output on the Dashboard
 * Python3.7 at least must be instaled
