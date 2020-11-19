@@ -13,6 +13,9 @@ import os
 from collections import deque
 from urllib.parse import urlparse, parse_qs
 from ansi2html import Ansi2HTMLConverter
+from gpiozero import CPUTemperature
+from os import popen
+import psutil
 
 current_dir = os.getcwd()
 config = configparser.ConfigParser()
@@ -53,35 +56,55 @@ def view_log(websocket, path):
         elif path == "/DAPNET":
             file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
             NUM_LINES = 0
-        logging.info(file_path)
-        if not os.path.isfile(file_path):
-            raise ValueError('File not found', format(file_path))
+        if path == "/MMDVM" or path == "/DAPNET":
+            logging.info(file_path)
+            if not os.path.isfile(file_path):
+                raise ValueError('File not found', format(file_path))
 
-        with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
+            with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
 
-            content = ''.join(deque(f, NUM_LINES))
-            content = conv.convert(content, full=False)
-            lines = content.split("\n")
-            for line in lines:
-                if line.find("from ") > 0 and line.find("to ") > 0:
-                    source = line[line.index("from ") + 5:line.index("to ")].strip()
-                    if source in dmrids: 
-                        line = line.replace(source, dmrids[source])
-                yield from websocket.send(line)
+                content = ''.join(deque(f, NUM_LINES))
+                content = conv.convert(content, full=False)
+                lines = content.split("\n")
+                for line in lines:
+                    if line.find("from ") > 0 and line.find("to ") > 0:
+                        source = line[line.index("from ") + 5:line.index("to ")].strip()
+                        if source in dmrids: 
+                            line = line.replace(source, dmrids[source])
+                    yield from websocket.send(line)
 
+                while True:
+                    content = f.read()
+                    if content:
+                        content = conv.convert(content, full=False)
+                        lines = content.split("\n")
+                        for line in lines:
+                            if line.find("from ") > 0 and line.find("to ") > 0:
+                                source = line[line.index("from ") + 5:line.index("to ")].strip()
+                                if source in dmrids: 
+                                    line = line.replace(source, dmrids[source])
+                            yield from websocket.send(line)
+                    else:
+                        yield from asyncio.sleep(0.2)
+        elif path == "/SYSINFO":
             while True:
-                content = f.read()
-                if content:
-                    content = conv.convert(content, full=False)
-                    lines = content.split("\n")
-                    for line in lines:
-                        if line.find("from ") > 0 and line.find("to ") > 0:
-                            source = line[line.index("from ") + 5:line.index("to ")].strip()
-                            if source in dmrids: 
-                                line = line.replace(source, dmrids[source])
-                        yield from websocket.send(line)
-                else:
-                    yield from asyncio.sleep(0.2)
+                cpu = CPUTemperature()
+                f = open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")
+                cpufrq = str((int(f.read()) / 1000))
+                cpu_usage = str(psutil.cpu_percent())
+                ram = psutil.virtual_memory()
+                ram_total = str(ram.total / 2**20)
+                ram_used = str(ram.used / 2**20)
+                ram_free = str(ram.free / 2**20)
+                ram_percent_used = str(ram.percent)
+                
+                disk = psutil.disk_usage('/')
+                disk_total = str(disk.total / 2**30)
+                disk_used = str(disk.used / 2**30)
+                disk_free = str(disk.free / 2**30)
+                disk_percent_used = str(disk.percent)
+                yield from websocket.send("SYSINFO: cputemp:" + str(cpu.temperature) + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
+                yield from asyncio.sleep(10)
 
     except ValueError as e:
         try:

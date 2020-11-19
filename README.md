@@ -23,6 +23,7 @@ You'll need to install several python3 modules. A concrete list will follow here
 Actually known:
 * websockets: `sudo apt install python3-websockets`
 * ansi2html: `sudo pip3 install ansi2html`
+* gpiozero: `sudo apt install python3-gpiozero`
 
 ### Reommendations
 * take care to set Loglevel for FileLevel = 2 in your MMDVM.ini

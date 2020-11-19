@@ -450,6 +450,37 @@ function getDapnetMessages(document, event) {
 	});
 }
 
+function getSysInfo(document, event) {
+	$(document).ready(function() {
+		// cputemp:49.388 cpufrg:600.0 cpuusage:0.8 ram_total:974.37890625 ram_used:159.69140625 ram_free:157.265625 ram_percent_used:27.9 disk_total:7.084514617919922 disk_used:3.5408592224121094 disk_free:3.2069854736328125 disk_percent_used:52.5
+		logIt(event.data);
+		data = event.data;
+		data = data.substring(data.indexOf(" ") + 1);
+		logIt(data);
+		document.getElementById("cputemp").innerHTML = parseFloat(data.substring(data.indexOf("cputemp:") + 8, data.indexOf(" "))).toFixed(1);
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("cpufrg").innerHTML = data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("cpuusage").innerHTML = data.substring(data.indexOf("cpuusage:") + 9, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("ram_total").innerHTML = Math.round(data.substring(data.indexOf("ram_total:") + 10, data.indexOf(" ")));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("ram_used").innerHTML = Math.round(data.substring(data.indexOf("ram_used:") + 9, data.indexOf(" ")));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("ram_free").innerHTML = Math.round(data.substring(data.indexOf("ram_free:") + 9, data.indexOf(" ")));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("ram_percent_used").innerHTML = data.substring(data.indexOf("ram_percent_used:") + 17, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("disk_total").innerHTML = parseFloat(data.substring(data.indexOf("disk_total:") + 11, data.indexOf(" "))).toFixed(3);
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("disk_used").innerHTML = parseFloat(data.substring(data.indexOf("disk_used:") + 10, data.indexOf(" "))).toFixed(3);
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
+	});
+}
+
 $(document).ready(function() {
 	if(showCurrTXTab == 0){
 		document.getElementById("myTab").children[0].style.display="none";
@@ -471,8 +502,12 @@ $(document).ready(function() {
 		document.getElementById("myTab").children[4].style.display="none";
 		document.getElementById("dapnet").style.display="none";
 	}
-	if(showAboutTab == 0){
+	if(showSysInfoTab == 0){
 		document.getElementById("myTab").children[5].style.display="none";
+		document.getElementById("sysinfo").style.display="none";
+	}
+	if(showAboutTab == 0){
+		document.getElementById("myTab").children[6].style.display="none";
 		document.getElementById("about").style.display="none";
 	}
 	
@@ -513,6 +548,14 @@ $(document).ready(function() {
 			element.classList.add("active");
 			
 			var element = document.getElementById("dapnet");
+			element.classList.add("show");
+			element.classList.add("active");
+			break;
+		case "SysInfoTab":
+			var element = document.getElementById("sysinfo-tab");
+			element.classList.add("active");
+			
+			var element = document.getElementById("sysinfo");
 			element.classList.add("show");
 			element.classList.add("active");
 			break;
