@@ -67,10 +67,22 @@ def view_log(websocket, path):
                 content = conv.convert(content, full=False)
                 lines = content.split("\n")
                 for line in lines:
-                    if line.find("from ") > 0 and line.find("to ") > 0:
-                        source = line[line.index("from ") + 5:line.index("to ")].strip()
-                        if source in dmrids: 
-                            line = line.replace(source, dmrids[source])
+                    if line.find("received") > 0 or line.find("network watchdog") > 0:
+                        if line.find("from ") > 0 and line.find("to ") > 0:
+                            source = line[line.index("from ") + 5:line.index("to ")].strip()
+                            if source in dmrids:
+                                line = line.replace(source, dmrids[source])
+                        if line.find("to ") > 0:
+                            if line.find("at ") > 0 and line.find("late entry") < 0:
+                                target = line[line.index("to ") + 3:line.rindex("at ")]
+                                if target in dmrids:
+                                    line = line.replace(target, dmrids[target])
+                            else:
+                                target = line[line.index("to") + 3:]
+                                if target.find(",") > 0:
+                                    target = target[0:target.index(",")]
+                                if target in dmrids:
+                                    line = line.replace(target, dmrids[target])
                     yield from websocket.send(line)
 
                 while True:
@@ -79,10 +91,22 @@ def view_log(websocket, path):
                         content = conv.convert(content, full=False)
                         lines = content.split("\n")
                         for line in lines:
-                            if line.find("from ") > 0 and line.find("to ") > 0:
-                                source = line[line.index("from ") + 5:line.index("to ")].strip()
-                                if source in dmrids: 
-                                    line = line.replace(source, dmrids[source])
+                            if line.find("received") > 0 or line.find("network watchdog") > 0:
+                                if line.find("from ") > 0 and line.find("to ") > 0:
+                                    source = line[line.index("from ") + 5:line.index("to ")].strip()
+                                    if source in dmrids:
+                                        line = line.replace(source, dmrids[source])
+                                if line.find("to ") > 0:
+                                    if line.find("at ") > 0 and line.find("late entry") < 0:
+                                        target = line[line.index("to ") + 3:line.rindex("at ")]
+                                        if target in dmrids:
+                                            line = line.replace(target, dmrids[target])
+                                    else:
+                                        target = line[line.index("to") + 3:]
+                                        if target.find(",") > 0:
+                                            target = target[0:target.index(",")]
+                                        if target in dmrids:
+                                            line = line.replace(target, dmrids[target])
                             yield from websocket.send(line)
                     else:
                         yield from asyncio.sleep(0.2)
@@ -153,6 +177,7 @@ def main():
         for line in lines:
             tokens = line.split("\t")
             dmrids[tokens[0]] = tokens[1]
+    
     logging.info("Starting Websocketserver")
     websocketserver()
 
