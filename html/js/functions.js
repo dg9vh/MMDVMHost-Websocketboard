@@ -452,16 +452,20 @@ function getDapnetMessages(document, event) {
 
 function getSysInfo(document, event) {
 	$(document).ready(function() {
-		// cputemp:49.388 cpufrg:600.0 cpuusage:0.8 ram_total:974.37890625 ram_used:159.69140625 ram_free:157.265625 ram_percent_used:27.9 disk_total:7.084514617919922 disk_used:3.5408592224121094 disk_free:3.2069854736328125 disk_percent_used:52.5
 		logIt(event.data);
 		data = event.data;
 		data = data.substring(data.indexOf(" ") + 1);
-		logIt(data);
 		document.getElementById("cputemp").innerHTML = parseFloat(data.substring(data.indexOf("cputemp:") + 8, data.indexOf(" "))).toFixed(1);
 		data = data.substring(data.indexOf(" ") + 1);
 		document.getElementById("cpufrg").innerHTML = data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" "));
 		data = data.substring(data.indexOf(" ") + 1);
 		document.getElementById("cpuusage").innerHTML = data.substring(data.indexOf("cpuusage:") + 9, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("cpu_load1").innerHTML = data.substring(data.indexOf("cpu_load1:") + 10, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("cpu_load5").innerHTML = data.substring(data.indexOf("cpu_load5:") + 10, data.indexOf(" "));
+		data = data.substring(data.indexOf(" ") + 1);
+		document.getElementById("cpu_load15").innerHTML = data.substring(data.indexOf("cpu_load15:") + 11, data.indexOf(" "));
 		data = data.substring(data.indexOf(" ") + 1);
 		document.getElementById("ram_total").innerHTML = Math.round(data.substring(data.indexOf("ram_total:") + 10, data.indexOf(" ")));
 		data = data.substring(data.indexOf(" ") + 1);

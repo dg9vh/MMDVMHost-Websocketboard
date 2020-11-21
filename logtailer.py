@@ -116,6 +116,11 @@ def view_log(websocket, path):
                 f = open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")
                 cpufrq = str((int(f.read()) / 1000))
                 cpu_usage = str(psutil.cpu_percent())
+                cpu_load = os.getloadavg();
+                cpu_load1 = str(cpu_load[0])
+                cpu_load5 = str(cpu_load[1])
+                cpu_load15 = str(cpu_load[2])
+                
                 ram = psutil.virtual_memory()
                 ram_total = str(ram.total / 2**20)
                 ram_used = str(ram.used / 2**20)
@@ -127,7 +132,7 @@ def view_log(websocket, path):
                 disk_used = str(disk.used / 2**30)
                 disk_free = str(disk.free / 2**30)
                 disk_percent_used = str(disk.percent)
-                yield from websocket.send("SYSINFO: cputemp:" + str(cpu.temperature) + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
+                yield from websocket.send("SYSINFO: cputemp:" + str(cpu.temperature) + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
                 yield from asyncio.sleep(10)
 
     except ValueError as e:
