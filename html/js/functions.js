@@ -458,7 +458,7 @@ function getSysInfo(document, event) {
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("cputemp").innerHTML = parseFloat(data.substring(data.indexOf("cputemp:") + 8, data.indexOf(" "))).toFixed(1);
 			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("cpufrg").innerHTML = data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" "));
+			document.getElementById("cpufrg").innerHTML = Math.round(data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" ")));
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("cpuusage").innerHTML = data.substring(data.indexOf("cpuusage:") + 9, data.indexOf(" "));
 			data = data.substring(data.indexOf(" ") + 1);
