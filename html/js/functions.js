@@ -452,36 +452,38 @@ function getDapnetMessages(document, event) {
 
 function getSysInfo(document, event) {
 	$(document).ready(function() {
-		logIt(event.data);
-		data = event.data;
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cputemp").innerHTML = parseFloat(data.substring(data.indexOf("cputemp:") + 8, data.indexOf(" "))).toFixed(1);
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cpufrg").innerHTML = data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cpuusage").innerHTML = data.substring(data.indexOf("cpuusage:") + 9, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cpu_load1").innerHTML = data.substring(data.indexOf("cpu_load1:") + 10, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cpu_load5").innerHTML = data.substring(data.indexOf("cpu_load5:") + 10, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("cpu_load15").innerHTML = data.substring(data.indexOf("cpu_load15:") + 11, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("ram_total").innerHTML = Math.round(data.substring(data.indexOf("ram_total:") + 10, data.indexOf(" ")));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("ram_used").innerHTML = Math.round(data.substring(data.indexOf("ram_used:") + 9, data.indexOf(" ")));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("ram_free").innerHTML = Math.round(data.substring(data.indexOf("ram_free:") + 9, data.indexOf(" ")));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("ram_percent_used").innerHTML = data.substring(data.indexOf("ram_percent_used:") + 17, data.indexOf(" "));
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("disk_total").innerHTML = parseFloat(data.substring(data.indexOf("disk_total:") + 11, data.indexOf(" "))).toFixed(3);
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("disk_used").innerHTML = parseFloat(data.substring(data.indexOf("disk_used:") + 10, data.indexOf(" "))).toFixed(3);
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
-		data = data.substring(data.indexOf(" ") + 1);
-		document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
+		if (event.data.startsWith("SYSINFO")) { 
+			logIt(event.data);
+			data = event.data;
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cputemp").innerHTML = parseFloat(data.substring(data.indexOf("cputemp:") + 8, data.indexOf(" "))).toFixed(1);
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cpufrg").innerHTML = data.substring(data.indexOf("cpufrg:") + 7, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cpuusage").innerHTML = data.substring(data.indexOf("cpuusage:") + 9, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cpu_load1").innerHTML = data.substring(data.indexOf("cpu_load1:") + 10, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cpu_load5").innerHTML = data.substring(data.indexOf("cpu_load5:") + 10, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("cpu_load15").innerHTML = data.substring(data.indexOf("cpu_load15:") + 11, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("ram_total").innerHTML = Math.round(data.substring(data.indexOf("ram_total:") + 10, data.indexOf(" ")));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("ram_used").innerHTML = Math.round(data.substring(data.indexOf("ram_used:") + 9, data.indexOf(" ")));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("ram_free").innerHTML = Math.round(data.substring(data.indexOf("ram_free:") + 9, data.indexOf(" ")));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("ram_percent_used").innerHTML = data.substring(data.indexOf("ram_percent_used:") + 17, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("disk_total").innerHTML = parseFloat(data.substring(data.indexOf("disk_total:") + 11, data.indexOf(" "))).toFixed(3);
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("disk_used").innerHTML = parseFloat(data.substring(data.indexOf("disk_used:") + 10, data.indexOf(" "))).toFixed(3);
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
+		}
 	});
 }
 
