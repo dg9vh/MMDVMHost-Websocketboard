@@ -53,13 +53,13 @@ def view_log(websocket, path):
             file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
         elif path == "/DAPNET":
             file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+
         if path == "/MMDVM" or path == "/DAPNET":
             logging.info(file_path)
             if not os.path.isfile(file_path):
                 raise ValueError('File not found', format(file_path))
 
             with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
-
                 content = ''.join(deque(f))
                 content = conv.convert(content, full=False)
                 lines = content.split("\n")
@@ -138,7 +138,7 @@ def view_log(websocket, path):
                 disk_free = str(disk.free / 2**30)
                 disk_percent_used = str(disk.percent)
                 yield from websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
-               yield from asyncio.sleep(10)
+                yield from asyncio.sleep(10)
 
     except ValueError as e:
         try:
