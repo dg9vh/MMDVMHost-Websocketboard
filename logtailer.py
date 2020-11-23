@@ -13,7 +13,6 @@ import os
 from collections import deque
 from urllib.parse import urlparse, parse_qs
 from ansi2html import Ansi2HTMLConverter
-#from gpiozero import CPUTemperature
 from os import popen
 import psutil
 
@@ -39,7 +38,6 @@ def view_log(websocket, path):
         except Exception:
             raise ValueError('Fail to parse URL', format(path))
 
-        NUM_LINES = int(config['MMDVMHost']['Num_Lines'])
         path = os.path.abspath(parse_result.path)
         now = datetime.datetime.now()
         year = str(now.year)
@@ -55,7 +53,6 @@ def view_log(websocket, path):
             file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
         elif path == "/DAPNET":
             file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
-            NUM_LINES = 0
         if path == "/MMDVM" or path == "/DAPNET":
             logging.info(file_path)
             if not os.path.isfile(file_path):
@@ -63,7 +60,7 @@ def view_log(websocket, path):
 
             with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
 
-                content = ''.join(deque(f, NUM_LINES))
+                content = ''.join(deque(f))
                 content = conv.convert(content, full=False)
                 lines = content.split("\n")
                 for line in lines:
@@ -112,8 +109,6 @@ def view_log(websocket, path):
                         yield from asyncio.sleep(0.2)
         elif path == "/SYSINFO":
             while True:
-#                cpu = CPUTemperature()
-#                cpu_temp = psutil.sensors_temperatures()
                 cpu_temp = ""
                 temps = psutil.sensors_temperatures()
                 if not temps:
@@ -121,12 +116,10 @@ def view_log(websocket, path):
                 for name, entries in temps.items():
                     for entry in entries:
                         cpu_temp = str(entry.current)
-#                f = open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")
                 cpufrqs = psutil.cpu_freq()
                 cpufrq = "N/A"
                 if cpufrqs:
                     cpufrq = str(cpufrqs.current)
-#                cpufrq = str((int(f.read()) / 1000))
                 cpu_usage = str(psutil.cpu_percent())
                 cpu_load = os.getloadavg();
                 cpu_load1 = str(cpu_load[0])
@@ -145,8 +138,7 @@ def view_log(websocket, path):
                 disk_free = str(disk.free / 2**30)
                 disk_percent_used = str(disk.percent)
                 yield from websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
-#                yield from websocket.send("SYSINFO: cputemp:" + str(cpu.temperature) + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
-                yield from asyncio.sleep(10)
+               yield from asyncio.sleep(10)
 
     except ValueError as e:
         try:
