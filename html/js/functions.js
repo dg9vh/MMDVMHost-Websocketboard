@@ -89,7 +89,6 @@ function getBER(logline) {
 	}
 }
 
-
 function getAddToQSO(logline) {
 	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
 	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
@@ -173,21 +172,21 @@ function clocktime() {
 		s = now.getSeconds();
 	m = leadingZero(m);
 	s = leadingZero(s);
-    return h + ':' + m + ':' + s;
+	return h + ':' + m + ':' + s;
 
 }
-  
+
 function leadingZero(zahl) {
-    zahl = (zahl < 10 ? '0' : '' )+ zahl;  
-    return zahl;
+	zahl = (zahl < 10 ? '0' : '' )+ zahl;  
+	return zahl;
 }
 
 function copyToQSO(callsign) {
 	$(document).ready(function() {
 		t_qso.row.add( [
-					callsign,
-					new Date().toUTCString()
-				] ).draw();
+			callsign,
+			new Date().toUTCString()
+		] ).draw();
 	});
 	alert("" + callsign + " added to in QSO-Tab");
 	
@@ -582,6 +581,7 @@ $(document).ready(function() {
 		default:
 			var element = document.getElementById("currtx-tab");
 			element.classList.add("active");
+			
 			element = document.getElementById("currtx");
 			element.classList.add("show");
 			element.classList.add("active");
