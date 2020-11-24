@@ -344,6 +344,12 @@ function getLastHeard(document, event) {
 							addToQSO
 						]
 						t_lh.row(rowIndexes[0]).data( newData ).draw(false);
+						var row = t_lh.row(rowIndexes[0]).node();
+						if (txing) {
+							$(row).addClass('red');
+						} else {
+							$(row).removeClass('red');
+						}
 					} else {
 						t_lh.row.add( [
 							timestamp,

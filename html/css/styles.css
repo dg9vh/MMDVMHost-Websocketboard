@@ -29,3 +29,8 @@ body {
 nowrap {
 	white-space:nowrap
 }
+
+.red {
+  background-color: Coral !important;
+}
+
