@@ -183,9 +183,18 @@ def main():
             raise ValueError('File not found', format(dmr_id_lookupfile))
         
         f = open(dmr_id_lookupfile, 'r')
-        lines = f.readlines() 
+        lines = f.readlines()
+        separator = "\t"
         for line in lines:
-            tokens = line.split("\t")
+            if line.find(" "):
+                separator = " "
+            if line.find(";"):
+                separator = ";"
+            if line.find(","):
+                separator = ","
+            if line.find("\t"):
+                separator = "\t"
+            tokens = line.split(separator)
             dmrids[tokens[0]] = tokens[1]
     
     logging.info("Starting Websocketserver")
