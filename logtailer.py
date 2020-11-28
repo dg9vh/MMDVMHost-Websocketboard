@@ -15,6 +15,14 @@ from urllib.parse import urlparse, parse_qs
 from ansi2html import Ansi2HTMLConverter
 from os import popen
 import psutil
+import functools
+from http import HTTPStatus
+
+MIME_TYPES = {
+    "html": "text/html",
+    "js": "text/javascript",
+    "css": "text/css"
+}
 
 current_dir = os.getcwd()
 config = configparser.ConfigParser()
@@ -26,8 +34,42 @@ dmrids = {}
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 conv = Ansi2HTMLConverter(inline=True)
 
-@asyncio.coroutine
-def view_log(websocket, path):
+
+async def process_request(sever_root, path, request_headers):
+    """Serves a file when doing a GET request with a valid path."""
+    logging.info(request_headers)
+    if "Upgrade" in request_headers:
+        return  # Probably a WebSocket connection
+
+    if path == '/':
+        path = '/index.html'
+
+    response_headers = [
+        ('Server', 'asyncio websocket server'),
+        ('Connection', 'close'),
+    ]
+
+    # Derive full system path
+    full_path = os.path.realpath(os.path.join(sever_root, "html/" + path[1:]))
+
+    # Validate the path
+    if os.path.commonpath((sever_root, full_path)) != sever_root or \
+            not os.path.exists(full_path) or not os.path.isfile(full_path):
+        logging.info("HTTP GET {} 404 NOT FOUND".format(path))
+        return HTTPStatus.NOT_FOUND, [], b'404 NOT FOUND'
+
+    # Guess file content type
+    extension = full_path.split(".")[-1]
+    mime_type = MIME_TYPES.get(extension, "application/octet-stream")
+    response_headers.append(('Content-Type', mime_type))
+
+    # Read the whole file into memory and send it out
+    body = open(full_path, 'rb').read()
+    response_headers.append('Content-Length', str(len(body)))
+    logging.info("HTTP GET {} 200 OK".format(path))
+    return HTTPStatus.OK, response_headers, body
+
+async def view_log(websocket, path):
     global config
     global dmrids
     logging.info('Connected, remote={}, path={}'.format(websocket.remote_address, path))
@@ -80,7 +122,7 @@ def view_log(websocket, path):
                                     target = target[0:target.index(",")]
                                 if target in dmrids:
                                     line = line.replace(target, dmrids[target])
-                    yield from websocket.send(line)
+                    await websocket.send(line)
 
                 while True:
                     content = f.read()
@@ -104,9 +146,9 @@ def view_log(websocket, path):
                                             target = target[0:target.index(",")]
                                         if target in dmrids:
                                             line = line.replace(target, dmrids[target])
-                            yield from websocket.send(line)
+                            await websocket.send(line)
                     else:
-                        yield from asyncio.sleep(0.2)
+                        await asyncio.sleep(0.2)
         elif path == "/SYSINFO":
             while True:
                 cpu_temp = ""
@@ -137,13 +179,13 @@ def view_log(websocket, path):
                 disk_used = str(disk.used / 2**30)
                 disk_free = str(disk.free / 2**30)
                 disk_percent_used = str(disk.percent)
-                yield from websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
-                yield from asyncio.sleep(10)
+                await websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
+                await asyncio.sleep(10)
 
     except ValueError as e:
         try:
-            yield from websocket.send('Logtailer-Errormessage: ValueError: {}'.format(e))
-            yield from websocket.close()
+            await websocket.send('Logtailer-Errormessage: ValueError: {}'.format(e))
+            await websocket.close()
         except Exception:
             pass
 
@@ -151,8 +193,8 @@ def view_log(websocket, path):
 
     except Exception as e:
         try:
-            yield from websocket.send('Logtailer-Errormessage: Error: {}'.format(e))
-            yield from websocket.close()
+            await websocket.send('Logtailer-Errormessage: Error: {}'.format(e))
+            await websocket.close()
         except Exception:
             pass
         log_close(websocket, path, e)
@@ -169,9 +211,18 @@ def log_close(websocket, path, exception=None):
 
 
 def websocketserver():
+    '''    # set first argument for the handler to current working directory
+    handler = functools.partial(process_request, os.getcwd())
+    start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'], process_request=handler)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    message = 'Started Websocketserver at {}:{}'.format(config['DEFAULT']['Host'], config['DEFAULT']['Port'])
+    logging.info(message)
+    asyncio.get_event_loop().run_forever()
+    '''
     start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'])
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
+
 
 
 def main():

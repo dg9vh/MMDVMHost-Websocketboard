@@ -156,6 +156,7 @@
 									<tr>
 										<th>Callsign</th>
 										<th>Added at</th>
+										<th>Last TX at</th>
 									</tr>
 								</thead>
 							</table>
@@ -274,7 +275,8 @@
 			
 			
 			var t_qso = $('#inQSO').DataTable( {
-				"order": [[ 0, "asc" ]]
+				"order": [[ 2, "asc" ]],
+				"autoWidth": false
 			} );
 			
 			$('#inQSO tbody').on( 'click', 'tr', function () {

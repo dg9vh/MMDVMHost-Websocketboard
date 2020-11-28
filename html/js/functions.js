@@ -185,7 +185,8 @@ function copyToQSO(callsign) {
 	$(document).ready(function() {
 		t_qso.row.add( [
 			callsign,
-			new Date().toUTCString()
+			new Date().toUTCString(),
+			""
 		] ).draw();
 	});
 	alert("" + callsign + " added to in QSO-Tab");
@@ -198,10 +199,22 @@ function getCurrentTXing() {
 	if (ts1TXing != null) {
 		ts1 = ts1TXing.split(";");
 		ts1[4] = Math.round((Date.now() - Date.parse(ts1timestamp.replace(" ","T")+".000Z"))/1000);
+		t_qso.rows( function ( idx, data, node ) {
+			if(data[0] == ts1[1]){
+				data[2] = ts1timestamp;
+				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
+			}
+		}).draw();
 	}
 	if (ts2TXing != null) {
 		ts2 = ts2TXing.split(";");
 		ts2[4] = Math.round((Date.now() - Date.parse(ts2timestamp.replace(" ","T")+".000Z"))/1000);
+		t_qso.rows( function ( idx, data, node ) {
+			if(data[0] == ts2[1]){
+				data[2] = ts2timestamp;
+				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
+			}
+		}).draw();
 	}
 	t_ct.clear().draw();
 	if (ts1 != null) {
