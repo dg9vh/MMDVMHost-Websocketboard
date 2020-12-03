@@ -237,16 +237,65 @@ function getCurrentTXing() {
 	}
 }
 
+function getMHZ(qrg) {
+	qrg = qrg / 1000000;
+	return qrg;
+}
+
 function getLastHeard(document, event) {
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
-// && line.indexOf("network watchdog") < 0
+// M: 2020-12-03 05:16:12.492 MMDVMHost-20201031 is starting
+// M: 2020-12-03 05:16:12.492 Built 19:36:25 Nov 12 2020 (GitID #c800a4d)
+// I: 2020-12-03 20:07:45.951 MMDVM protocol version: 1, description: MMDVM_HS_Dual_Hat-v1.5.2 20201108 14.7456MHz dual ADF7021 FW by CA6JAU GitID #89daa20
+// I: 2020-12-03 20:07:45.973     Callsign: DG9VH
+// I: 2020-12-03 20:07:43.940     Id: 262509403
+// I: 2020-12-03 20:07:45.973     RX Frequency: 430412500Hz
+// I: 2020-12-03 20:07:45.973     TX Frequency: 439812500Hz
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
 			logIt(line);
+			
+			if (line.indexOf("MMDVMHost") > 0 ) {
+				mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
+				mmdvmhost_version = mmdvmhost_version.substring(0, mmdvmhost_version.indexOf(" "));
+				document.getElementById("mmdvmhost_version").innerHTML = mmdvmhost_version;
+			}
+			
+			if (line.indexOf("Built") > 0 ) {
+				built = line.substring(line.indexOf("Built") + 6);
+				document.getElementById("built").innerHTML = built;
+			}
+			
+			if (line.indexOf("description:") > 0 ) {
+				modem = line.substring(line.indexOf("description:") + 12);
+				document.getElementById("modem").innerHTML = modem;
+			}
+			
+			if (line.indexOf("Callsign:") > 0 ) {
+				callsign = line.substring(line.indexOf("Callsign:") + 10);
+				document.getElementById("callsign").innerHTML = callsign;
+			}
+			
+			
+			if (line.indexOf("Id:") > 0 ) {
+				dmrid = line.substring(line.indexOf("Id:") + 4);
+				document.getElementById("dmrid").innerHTML = dmrid;
+			}
+			
+			if (line.indexOf("RX Frequency:") > 0 ) {
+				rxqrg = line.substring(line.indexOf("RX Frequency:") + 14, 54);
+				document.getElementById("rxqrg").innerHTML = getMHZ(rxqrg) + " MHz";
+			}
+			
+			if (line.indexOf("TX Frequency:") > 0 ) {
+				txqrg = line.substring(line.indexOf("TX Frequency:") + 14, 54);
+				document.getElementById("txqrg").innerHTML = getMHZ(txqrg) + " MHz";
+			}
+			
 			txing = false;
 			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0)) {
 				if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("received RF header") > 0) {
