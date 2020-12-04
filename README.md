@@ -49,6 +49,14 @@ Actually known:
 
 Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
 
+### Troubleshoting
+If you have any trouble running the software most things depend on the logtailer-component. So it is a good idea to try starting the software on the console wih
+`python3 ./logtailer.py` to see the output of the programme. A common error are missing python-libraries you should install with the commands mentioned above.
+
+If you found any further missing library let me know! Just open an issue!
+
+If there are problems with paths for logfiles you also could get some impressions with the output of the programme.
+
 ### If using DMRHost by BrandMeister-Team
 If you are using the DMRHost as replacement for MMDVMHost you should enable DMR-ID-Lookup within logtailer.ini by setting the corresponding option = 1
 Also take care to configure the filepath to the correct location of your DMRIds.dat.
