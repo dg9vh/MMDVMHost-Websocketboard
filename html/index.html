@@ -262,11 +262,17 @@
 						$(row).removeClass('red');
      					}
        				},
-				"order": [[ 0, "desc" ]]
+				"order": [[ 0, "desc" ]],
+				"columnDefs": [
+						{ className: "dt-nowrap", "targets": [ 0, 1, 2, 3, 7 ] }
+					]
 			} );
 			
 			var t_localh = $('#localHeard').DataTable( {
-				"order": [[ 0, "desc" ]]
+				"order": [[ 0, "desc" ]],
+				"columnDefs": [
+						{ className: "dt-nowrap", "targets": [ 0, 1, 2, 3, 6 ] }
+					]
 			} );
 			
 			var t_dapnet = $('#dapnetmessages').DataTable( {

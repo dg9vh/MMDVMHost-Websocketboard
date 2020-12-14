@@ -16,7 +16,6 @@ body {
 	background-color: #f5f5f5;
 }
 
-
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
@@ -26,11 +25,8 @@ body {
 	padding: 0 15px;
 }
 
-nowrap {
-	white-space:nowrap
-}
+td.dt-nowrap { white-space: nowrap }
 
 .red {
   background-color: Coral !important;
 }
-
