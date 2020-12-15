@@ -92,7 +92,9 @@
 							<table id="lastHeard" class="table lastHeard table-condensed table-striped table-hover">
 								<thead>
 									<tr>
-										<th>Time (UTC)</th>
+										<th>Time (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
 										<th>Mode</th>
 										<th>Callsign</th>
 										<th>Target</th>
@@ -129,7 +131,10 @@
 							<table id="localHeard" class="table localHeard table-condensed table-striped table-hover">
 								<thead>
 									<tr>
-										<th>Time (UTC)</th>
+										
+										<th>Time (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
 										<th>Mode</th>
 										<th>Callsign</th>
 										<th>Target</th>
@@ -155,8 +160,12 @@
 								<thead>
 									<tr>
 										<th>Callsign</th>
-										<th>Added at</th>
-										<th>Last TX at</th>
+										<th>Added at (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
+										<th>Last TX at (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
 									</tr>
 								</thead>
 							</table>
@@ -175,7 +184,10 @@
 							<table id="dapnetmessages" class="table dapnetmessages table-condensed table-striped table-hover">
 								<thead>
 									<tr>
-										<th>Time (UTC)</th>
+										
+										<th>Time (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
 										<th>Slot</th>
 										<th>RIC</th>
 										<th>Message</th>

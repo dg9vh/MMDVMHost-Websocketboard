@@ -21,3 +21,6 @@ var showAboutTab = 1;
 // default-tab to show
 // chose from following list: CurrTXTab, LastHeardTab, LocalHeadTab, InQSOTab, DAPNETMessagesTab, SysInfoTab, AboutTab
 var defaultTab = "LastHeardTab";
+
+// Set displayed timezone and timestamp to timezone of browser if 1, else use UTC for displaying
+var useClientTimezone = 1;
