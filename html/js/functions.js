@@ -52,12 +52,9 @@ function getLocaltimeFromTimestamp(timestamp) {
 	}
 }
 
-
 function getRawTimestamp(logline) {
 	return logline.substring(3,22);
 }
-
-
 
 function getTimestamp(logline) {
 	return getLocaltimeFromTimestamp(getRawTimestamp(logline));
@@ -215,7 +212,6 @@ function clocktime() {
 	m = leadingZero(m);
 	s = leadingZero(s);
 	return h + ':' + m + ':' + s;
-
 }
 
 function leadingZero(zahl) {
@@ -474,10 +470,6 @@ function getLastHeard(document, event) {
 }
 
 function getLocalHeard(document, event) {
-// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
-// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
-// M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
-// M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
@@ -631,7 +623,8 @@ $(document).ready(function() {
 		case "CurrTXTab":
 			var element = document.getElementById("currtx-tab");
 			element.classList.add("active");
-			element = document.getElementById("currtx");
+			
+			var element = document.getElementById("currtx");
 			element.classList.add("show");
 			element.classList.add("active");
 			break;
@@ -687,7 +680,7 @@ $(document).ready(function() {
 			var element = document.getElementById("currtx-tab");
 			element.classList.add("active");
 			
-			element = document.getElementById("currtx");
+			var element = document.getElementById("currtx");
 			element.classList.add("show");
 			element.classList.add("active");
 			break;
