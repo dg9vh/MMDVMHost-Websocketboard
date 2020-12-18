@@ -5,6 +5,17 @@ This is a very first development version of my new MMDVMDash using websockets-te
 
 Also this should improve user experience.
 
+## Key Features
+* Websockets for reducing load on the hotspot/repeater
+* Currently TXing on all timeslots
+* Last-Heard-List
+* QSO-net-management
+* Local Heard-List
+* DAPNET messages with decoding of Skyper-messages, -rubrics and METAR-messages
+* System-Info-panel for visualize system health
+* Automatically detecting clients timezone for displaying timestamps in local behavior
+* Easier to customize the html-page because client-part persists in html and javascript-files
+
 ## Technical Details
 The Dashboard persists in detail in 3 components: two on the server (Hotspot/Repeater) side and on on the browser.
 
