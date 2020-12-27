@@ -291,10 +291,12 @@
 				"order": [[ 0, "desc" ]]
 			} );
 			
-			var ws3 = new WebSocket("ws://" + window.location.hostname + ":5678/SYSINFO");
-			ws3.onmessage = function (event) {
-				getSysInfo(document, event);
-			};
+			if (showSysInfoTab) {
+				var ws3 = new WebSocket("ws://" + window.location.hostname + ":5678/SYSINFO");
+				ws3.onmessage = function (event) {
+					getSysInfo(document, event);
+				};
+			}
 			
 			var ws1 = new WebSocket("ws://" + window.location.hostname + ":5678/MMDVM");
 			ws1.onmessage = function (event) {
@@ -323,12 +325,13 @@
 				t_qso.row('.selected').remove().draw( false );
 			} );
 			
-			var ws2 = new WebSocket("ws://" + window.location.hostname + ":5678/DAPNET");
-			ws2.onmessage = function (event) {
-				getDapnetMessages(document, event);
-			};
-			t_dapnet.order( [ 0, 'desc' ] ).draw();
-			
+			if (showDAPNETMessagesTab) {
+				var ws2 = new WebSocket("ws://" + window.location.hostname + ":5678/DAPNET");
+				ws2.onmessage = function (event) {
+					getDapnetMessages(document, event);
+				};
+				t_dapnet.order( [ 0, 'desc' ] ).draw();
+			}
 		</script>
 	</body>
 </html>
