@@ -24,3 +24,7 @@ var defaultTab = "LastHeardTab";
 
 // Set displayed timezone and timestamp to timezone of browser if 1, else use UTC for displaying
 var useClientTimezone = 1;
+
+// Show link to BrandMeister-LastHeard on TG if 1, else no link
+
+var showBMTGLink = 1;

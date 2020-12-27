@@ -77,7 +77,7 @@ function getCallsign(logline) {
 // 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
 // M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
 
-function getTarget(logline) {
+function getRawTarget(logline) {
 	if(logline.indexOf("at") > 0 && logline.indexOf("late entry") < 0 ) {
 		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf("at"));
 	} else {
@@ -86,6 +86,18 @@ function getTarget(logline) {
 			val = val.substring(0, val.indexOf(","));
 		}
 		return val;
+	}
+}
+
+function getTarget(logline) {
+	target = getRawTarget(logline);
+	if (showBMTGLink && getMode(logline).startsWith("DMR")) {
+		bmlink = "https://brandmeister.network/?page=lh&DestinationID=";
+		linkTarget = target.substring(3);
+		link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
+		return link;
+	} else {
+		return target;
 	}
 }
 
