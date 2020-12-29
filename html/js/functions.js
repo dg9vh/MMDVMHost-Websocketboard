@@ -45,7 +45,7 @@ function getTimezone() {
 function getLocaltimeFromTimestamp(timestamp) {
 	logIt(timestamp);
 	if (useClientTimezone) {
-		var localtime = new Date(timestamp + "Z");
+		var localtime = new Date(timestamp.replace(/-/g, "/") + " GMT");
 		return localtime.toLocaleString();
 	} else {
 		return timestamp;
