@@ -81,7 +81,7 @@ async def view_log(websocket, path):
             raise ValueError('Fail to parse URL', format(path))
 
         path = os.path.abspath(parse_result.path)
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(datetime.timezone.utc)
         year = str(now.year)
         month = str(now.month)
         if len(month) == 1:
@@ -92,9 +92,15 @@ async def view_log(websocket, path):
         
         file_path = ""
         if path == "/MMDVM":
-            file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+            if config['DEFAULT']['Filerotate'] == "True":
+                file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+            else:
+                file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+".log"
         elif path == "/DAPNET":
-            file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+            if config['DEFAULT']['Filerotate'] == "True":
+                file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+            else:
+                file_path = config['DAPNETGateway']['Logdir']+config['DAPNETGateway']['Prefix']+".log"
 
         if path == "/MMDVM" or path == "/DAPNET":
             logging.info(file_path)
@@ -102,7 +108,7 @@ async def view_log(websocket, path):
                 raise ValueError('File not found', format(file_path))
 
             with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
-                content = ''.join(deque(f))
+                content = ''.join(deque(f, 2))
                 content = conv.convert(content, full=False)
                 lines = content.split("\n")
                 for line in lines:
