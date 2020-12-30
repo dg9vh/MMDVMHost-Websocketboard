@@ -108,7 +108,7 @@ async def view_log(websocket, path):
                 raise ValueError('File not found', format(file_path))
 
             with open(file_path, newline = '\n', encoding="utf8", errors='ignore') as f:
-                content = ''.join(deque(f, 2))
+                content = ''.join(deque(f, int(config['DEFAULT']['MaxLines'])))
                 content = conv.convert(content, full=False)
                 lines = content.split("\n")
                 for line in lines:
