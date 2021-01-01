@@ -74,6 +74,21 @@ Also take care to configure the filepath to the correct location of your DMRIds.
 
 For updating the DMRIds.dat you can use the script you find in scripts-folder.
 
+## Best Practise Installation
+For getting the best user experience it is recommended to configure your MMDVMHost and other G4KLX-software with the following parameter:
+
+`FileRotate=0`
+
+This results in having only one logfile for each programme and having it rotated by your linux-system with logrotate if configured.
+
+You should also configure your logtailer.ini with
+
+`FileRotate=False`
+
+to have the logtailer in correct behaviour for reading this file.
+
+To configure log rotation in Linux take a look at https://www.tecmint.com/install-logrotate-to-manage-log-rotation-in-linux/.
+
 ## Credits
 
 *logtailer.py* is based on the work of http://shzhangji.com/blog/2017/07/15/log-tailer-with-websocket-and-python/
