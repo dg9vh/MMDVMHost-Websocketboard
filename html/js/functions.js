@@ -238,7 +238,7 @@ function copyToQSO(callsign) {
 			callsign,
 			getLocaltimeFromTimestamp(date[0] + " " + date[1].substring(0, date[1].indexOf("."))),
 			""
-		] ).draw();
+		] ).draw(false);
 	});
 	alert("" + callsign + " added to in QSO-Tab");
 	
@@ -255,7 +255,7 @@ function getCurrentTXing() {
 				data[2] = ts1timestamp;
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
-		}).draw();
+		}).draw(false);
 	}
 	if (ts2TXing != null) {
 		ts2 = ts2TXing.split(";");
@@ -265,9 +265,9 @@ function getCurrentTXing() {
 				data[2] = ts2timestamp;
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
-		}).draw();
+		}).draw(false);
 	}
-	t_ct.clear().draw();
+	t_ct.clear().draw(false);
 	if (ts1 != null) {
 		t_ct.row.add( [
 			ts1[0],
@@ -275,7 +275,7 @@ function getCurrentTXing() {
 			ts1[2],
 			ts1[3],
 			ts1[4]
-		] ).draw();
+		] ).draw(false);
 	}
 	if (ts2 != null) {
 		t_ct.row.add( [
@@ -284,7 +284,7 @@ function getCurrentTXing() {
 			ts2[2],
 			ts2[3],
 			ts2[4]
-		] ).draw();
+		] ).draw(false);
 	}
 }
 
@@ -402,7 +402,7 @@ function getLastHeard(document, event) {
 								t_lh.row(rowIndexes[0]).data( newData ).draw(false);
 							} else {
 								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
-								t_lh.row(rowIndexes[0]).remove().draw( false );
+								t_lh.row(rowIndexes[0]).remove().draw(false);
 							}
 						}
 					}
@@ -473,7 +473,7 @@ function getLastHeard(document, event) {
 							loss,
 							ber,
 							addToQSO
-						] ).draw();
+						] ).draw(false);
 					}
 				}
 			}
@@ -495,7 +495,7 @@ function getLocalHeard(document, event) {
 						getSource(line),
 						getDuration(line),
 						getBER(line)
-					] ).draw();
+					] ).draw(false);
 				}
 			}
 		});
@@ -514,7 +514,7 @@ function getDapnetMessages(document, event) {
 					getSlot(line),
 					getRIC(line),
 					getMessage(line)
-				] ).draw();
+				] ).draw(false);
 				messagecount--;
 				if (messagecount < 0 ) {
 					messagecount = 0;
