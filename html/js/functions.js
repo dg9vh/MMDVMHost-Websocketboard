@@ -1,8 +1,8 @@
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
-var ts1timestamp = null;
-var ts2timestamp = null;
+var ts1timestamp = "";
+var ts2timestamp = "";
 
 setInterval(getCurrentTXing, 1000);
 // 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
