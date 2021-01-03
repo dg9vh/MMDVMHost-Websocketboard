@@ -307,6 +307,7 @@ function getLastHeard(document, event) {
 // I: 2020-12-03 20:07:45.973     TX Frequency: 439812500Hz
 	$(document).ready(function() {
 		lines = event.data.split("\n");
+		var duration = 0;
 		lines.forEach(function(line, index, array) {
 			logIt(line);
 			
@@ -365,8 +366,11 @@ function getLastHeard(document, event) {
 					} else {
 						ts2TXing = null;
 					}
+					txing = false;
+					
 					if (line.indexOf("network watchdog") > 0) {
 						logIt("Network Watchdog!");
+						
 						var rowIndexes = [];
 						t_lh.rows( function ( idx, data, node ) {
 							if (getMode(line) == "DMR Slot 1" ) {
@@ -380,11 +384,10 @@ function getLastHeard(document, event) {
 								}
 							}
 						});
-						var duration = 0;
 						if (getMode(line) == "DMR Slot 1" ) {
-							duration = Math.round((Date.now() - Date.parse(ts1timestamp.replace(" ","T")+".000Z"))/1000);
+							duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts1timestamp.replace(" ","T")+".000Z")/1000);
 						} else {
-							duration = Math.round((Date.now() - Date.parse(ts2timestamp.replace(" ","T")+".000Z"))/1000);
+							duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts2timestamp.replace(" ","T")+".000Z")/1000);
 						}
 						if (rowIndexes[0]) {
 							if (t_lh.row(rowIndexes[0]).data[0] != null) {
@@ -399,29 +402,29 @@ function getLastHeard(document, event) {
 									"",
 									getAddToQSO(line)
 								]
-								t_lh.row(rowIndexes[0]).data( newData ).draw(false);
+								$('#lastHeard').dataTable().fnUpdate(newData,t_lh.data().rowIndexes[0],undefined,false);
 							} else {
 								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
 								t_lh.row(rowIndexes[0]).remove().draw(false);
 							}
-						}
+						} 
 					}
 				}
 				logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
 				logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
 				getCurrentTXing();
 				
-				if (line.indexOf("network watchdog") < 0) {
+				if (line.indexOf("network watchdog") < 0 ) {
 					var rowIndexes = [],
-					timestamp = getTimestamp(line),
-					mode = getMode(line),
-					callsign = getCallsign(line),
-					target = getTarget(line),
-					source = getSource(line),
-					duration = getDuration(line),
-					loss = getLoss(line),
-					ber = getBER(line),
-					addToQSO = getAddToQSO(line);
+						timestamp = getTimestamp(line),
+						mode = getMode(line),
+						callsign = getCallsign(line),
+						target = getTarget(line),
+						source = getSource(line),
+						duration = getDuration(line),
+						loss = getLoss(line),
+						ber = getBER(line),
+						addToQSO = getAddToQSO(line);
 					if (txing) {
 						duration = "TXing";
 						loss = "";
@@ -456,12 +459,6 @@ function getLastHeard(document, event) {
 							addToQSO
 						]
 						t_lh.row(rowIndexes[0]).data( newData ).draw(false);
-						var row = t_lh.row(rowIndexes[0]).node();
-						if (txing) {
-							$(row).addClass('red');
-						} else {
-							$(row).removeClass('red');
-						}
 					} else {
 						t_lh.row.add( [
 							timestamp,
@@ -475,6 +472,17 @@ function getLastHeard(document, event) {
 							addToQSO
 						] ).draw(false);
 					}
+				}
+				if (rowIndexes[0]) {
+					var row = t_lh.row(rowIndexes[0]).node();
+					if (txing) {
+						$(row).addClass('red');
+					} else {
+						$(row).removeClass('red');
+					}
+					var temp = t_lh.row(rowIndexes[0]).data();
+					temp[5] = duration;
+					$('#lastHeard').dataTable().fnUpdate(temp,rowIndexes[0],undefined,false);
 				}
 			}
 		});
