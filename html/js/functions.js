@@ -43,7 +43,7 @@ function getTimezone() {
 	}
 }
 function getLocaltimeFromTimestamp(timestamp) {
-	logIt(timestamp);
+	//logIt(timestamp);
 	if (useClientTimezone) {
 		var localtime = new Date(timestamp.replace(/-/g, "/") + " GMT");
 		return localtime.toLocaleString();
@@ -252,7 +252,7 @@ function getCurrentTXing() {
 		ts1[4] = Math.round((Date.now() - Date.parse(ts1timestamp.replace(" ","T")+".000Z"))/1000);
 		t_qso.rows( function ( idx, data, node ) {
 			if(data[0] == ts1[1]){
-				data[2] = ts1timestamp;
+				data[2] = getLocaltimeFromTimestamp(ts1timestamp);
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
 		}).draw(false);
@@ -262,7 +262,7 @@ function getCurrentTXing() {
 		ts2[4] = Math.round((Date.now() - Date.parse(ts2timestamp.replace(" ","T")+".000Z"))/1000);
 		t_qso.rows( function ( idx, data, node ) {
 			if(data[0] == ts2[1]){
-				data[2] = ts2timestamp;
+				data[2] = getLocaltimeFromTimestamp(ts2timestamp);
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
 		}).draw(false);
