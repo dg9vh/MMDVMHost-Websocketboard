@@ -392,7 +392,8 @@ function getLastHeard(document, event) {
 						logIt("RowIndexes: " + rowIndexes);
 						if (rowIndexes[0]) {
 							if (rowIndexes[0] == "0") {
-								rowIndexes[0] = rowIndexes[1];
+								t_lh.row(rowIndexes[0]).remove().draw(false);
+								//rowIndexes[0] = rowIndexes[1];
 							}
 							logIt(t_lh.row(rowIndexes[0]));
 							if (t_lh.row(rowIndexes[0]).data[0] != null) {
@@ -452,7 +453,8 @@ function getLastHeard(document, event) {
 						return false;
 					});
 					if (rowIndexes[0] == "0") {
-						rowIndexes[0] = rowIndexes[1];
+						t_lh.row(rowIndexes[0]).remove().draw(false);
+						//rowIndexes[0] = rowIndexes[1];
 					}
 					if (rowIndexes[0]) {
 						
