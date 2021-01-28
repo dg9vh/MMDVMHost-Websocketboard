@@ -46,8 +46,8 @@ Actually known:
 * first of all (if not already done by installation of MMDVMHost): create a syetemuser with `sudo adduser --system --no-create-home --group mmdvm`
 * clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
 * create directory with `sudo mkdir /opt/MMDVMDash`
-* change ownership to your user for example with `sudo chown -R pi /opt/MMDVMDash`
 * copy all files from repository into this folder
+* change ownership to user mmdvm for example with `sudo chown -R mmdvm:mmdvm /opt/MMDVMDash`
 * modify *logtailer.ini* to fit your needs
 * modify */html/js/config.js* to fit your needs, here you can switch on/off tabs showing or enable debug for getting some output in javascript console. You should take a look into this file - here are different options you can configure.
 * copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
