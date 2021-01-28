@@ -374,12 +374,12 @@ function getLastHeard(document, event) {
 						var rowIndexes = [];
 						t_lh.rows( function ( idx, data, node ) {
 							if (getMode(line) == "DMR Slot 1" ) {
-								if(data[0] == ts1timestamp){
+								if(data[0] == getLocaltimeFromTimestamp(ts1timestamp)){
 									rowIndexes.push(idx);
 								}
 								return false;
 							} else {
-								if(data[0] == ts2timestamp){
+								if(data[0] == getLocaltimeFromTimestamp(ts2timestamp)){
 									rowIndexes.push(idx);
 								}
 							}
@@ -389,7 +389,12 @@ function getLastHeard(document, event) {
 						} else {
 							duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts2timestamp.replace(" ","T")+".000Z")/1000);
 						}
+						logIt("RowIndexes: " + rowIndexes);
 						if (rowIndexes[0]) {
+							if (rowIndexes[0] == "0") {
+								rowIndexes[0] = rowIndexes[1];
+							}
+							
 							if (t_lh.row(rowIndexes[0]).data[0] != null) {
 								newData = [
 									t_lh.row(rowIndexes[0]).data[0],
@@ -402,7 +407,9 @@ function getLastHeard(document, event) {
 									"",
 									getAddToQSO(line)
 								]
-								$('#lastHeard').dataTable().fnUpdate(newData,t_lh.data().rowIndexes[0],undefined,false);
+								logIt(t_lh.row(rowIndexes[0]).data[2])
+								//$('#lastHeard').dataTable().fnUpdate(newData,t_lh.data().rowIndexes[0],undefined,false);
+								$('#lastHeard').dataTable().fnUpdate(newData,rowIndexes[0],undefined,false);
 							} else {
 								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
 								t_lh.row(rowIndexes[0]).remove().draw(false);
@@ -445,6 +452,9 @@ function getLastHeard(document, event) {
 						}
 						return false;
 					});
+					if (rowIndexes[0] == "0") {
+						rowIndexes[0] = rowIndexes[1];
+					}
 					if (rowIndexes[0]) {
 						
 						newData = [
@@ -472,6 +482,9 @@ function getLastHeard(document, event) {
 							addToQSO
 						] ).draw(false);
 					}
+				}
+				if (rowIndexes[0] == "0") {
+					rowIndexes[0] = rowIndexes[1];
 				}
 				if (rowIndexes[0]) {
 					var row = t_lh.row(rowIndexes[0]).node();
