@@ -3,9 +3,11 @@ Description=Python3 http.server
 After=network.target
 
 [Service]
-ExecStartPre=/bin/sleep 30
 Type=simple
+User=mmdvm
+Group=mmdvm
 Restart=always
+ExecStartPre=/bin/sleep 30
 # Modify for different location of Python3 or other port
 ExecStart=/usr/bin/python3 -m http.server 8000 --directory /opt/MMDVMDash/html
 
