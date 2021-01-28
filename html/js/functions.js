@@ -394,7 +394,7 @@ function getLastHeard(document, event) {
 							if (rowIndexes[0] == "0") {
 								rowIndexes[0] = rowIndexes[1];
 							}
-							
+							logIt(t_lh.row(rowIndexes[0]));
 							if (t_lh.row(rowIndexes[0]).data[0] != null) {
 								newData = [
 									t_lh.row(rowIndexes[0]).data[0],
@@ -408,11 +408,10 @@ function getLastHeard(document, event) {
 									getAddToQSO(line)
 								]
 								logIt(t_lh.row(rowIndexes[0]).data[2])
-								//$('#lastHeard').dataTable().fnUpdate(newData,t_lh.data().rowIndexes[0],undefined,false);
 								$('#lastHeard').dataTable().fnUpdate(newData,rowIndexes[0],undefined,false);
 							} else {
 								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
-								t_lh.row(rowIndexes[0]).remove().draw(false);
+								//t_lh.row(rowIndexes[0]).remove().draw(false);
 							}
 						} 
 					}
@@ -483,9 +482,9 @@ function getLastHeard(document, event) {
 						] ).draw(false);
 					}
 				}
-				if (rowIndexes[0] == "0") {
+				/*if (rowIndexes[0] == "0") {
 					rowIndexes[0] = rowIndexes[1];
-				}
+				}*/
 				if (rowIndexes[0]) {
 					var row = t_lh.row(rowIndexes[0]).node();
 					if (txing) {
@@ -494,6 +493,8 @@ function getLastHeard(document, event) {
 						$(row).removeClass('red');
 					}
 					var temp = t_lh.row(rowIndexes[0]).data();
+					logIt("Temp: "+ temp);
+					logIt("Duration: " + duration);
 					temp[5] = duration;
 					$('#lastHeard').dataTable().fnUpdate(temp,rowIndexes[0],undefined,false);
 				}
