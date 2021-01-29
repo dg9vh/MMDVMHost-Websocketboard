@@ -10,7 +10,9 @@ setInterval(getCurrentTXing, 1000);
 // M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
 // M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
 // M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
-
+// DMRHost:
+// M: 2021-01-29 00:32:28 DMR Slot 1, received network end of voice transmission from nnnnnnn to TG 262, 1.6 seconds
+// M: 2021-01-29 00:50:02 DMR Slot 2, received network voice header from nnnnnnn to TG 26298
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
 		console.log(message);
@@ -42,6 +44,14 @@ function getTimezone() {
 		return "UTC";
 	}
 }
+
+function isDMRHost(logline) {
+	if (logline.charAt(22) == " " )
+		return true;
+	else
+		return false;
+}
+
 function getLocaltimeFromTimestamp(timestamp) {
 	//logIt(timestamp);
 	if (useClientTimezone) {
@@ -61,7 +71,10 @@ function getTimestamp(logline) {
 }
 
 function getMode(logline) {
-	return logline.substring(27, logline.indexOf(","));
+	if (isDMRHost)
+		return logline.substring(23, logline.indexOf(","));
+	else
+		return logline.substring(27, logline.indexOf(","));
 }
 
 function getCallsign(logline) {
