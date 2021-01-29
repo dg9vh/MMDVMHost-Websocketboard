@@ -71,7 +71,7 @@ function getTimestamp(logline) {
 }
 
 function getMode(logline) {
-	if (isDMRHost)
+	if (isDMRHost(logline))
 		return logline.substring(23, logline.indexOf(","));
 	else
 		return logline.substring(27, logline.indexOf(","));
