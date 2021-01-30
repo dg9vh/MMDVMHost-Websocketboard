@@ -5,14 +5,7 @@ var ts1timestamp = "";
 var ts2timestamp = "";
 
 setInterval(getCurrentTXing, 1000);
-// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
-// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
-// M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
-// M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
-// M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
-// DMRHost:
-// M: 2021-01-29 00:32:28 DMR Slot 1, received network end of voice transmission from nnnnnnn to TG 262, 1.6 seconds
-// M: 2021-01-29 00:50:02 DMR Slot 2, received network voice header from nnnnnnn to TG 26298
+
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
 		console.log(message);
@@ -53,7 +46,6 @@ function isDMRHost(logline) {
 }
 
 function getLocaltimeFromTimestamp(timestamp) {
-	//logIt(timestamp);
 	if (useClientTimezone) {
 		var localtime = new Date(timestamp.replace(/-/g, "/") + " GMT");
 		return localtime.toLocaleString();
@@ -85,10 +77,6 @@ function getCallsign(logline) {
 		return callsign;
 	}
 }
-
-// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
-// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
-// M: 2020-11-07 15:41:22.601 DMR Slot 1, received network late entry from DO5DC to TG 262810
 
 function getRawTarget(logline) {
 	if(logline.indexOf("at") > 0 && logline.indexOf("late entry") < 0 ) {
@@ -158,13 +146,7 @@ function getAddToQSO(logline) {
 	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
 	return retval;
 }
-// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
-// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
-// M: 2020-11-03 19:33:26.411 Sending message in slot 5 to 0000224, type 6, func Alphanumeric: "YYYYMMDDHHMMSS201103203300"
-// M: 2020-11-03 19:36:00.124 Sending message in slot 13 to 0002504, type 5, func Numeric: "193600   031120"
-// M: 2020-11-03 19:36:00.165 Sending message in slot 13 to 0000200, type 6, func Alphanumeric: "XTIME=1936031120XTIME=1936031120"
-// M: 2020-11-03 19:36:00.216 Sending message in slot 13 to 0000216, type 6, func Alphanumeric: "YYYYMMDDHHMMSS201103193600"
-// D: 2020-11-06 18:35:00.343 Messages in Queue 0001
+
 function getSlot(logline) {
 	return logline.substring(logline.indexOf("slot") + 5, logline.indexOf("to ")).trim();
 }
@@ -307,17 +289,6 @@ function getMHZ(qrg) {
 }
 
 function getLastHeard(document, event) {
-// 00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
-// 01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
-// M: 2020-11-01 21:33:27.454 YSF, received network data from DG2MAS     to DG-ID 0 at DG2MAS
-// M: 2020-11-01 21:33:35.025 YSF, received network end of transmission from DG2MAS     to DG-ID 0, 7.7 seconds, 0% packet loss, BER: 0.0%
-// M: 2020-12-03 05:16:12.492 MMDVMHost-20201031 is starting
-// M: 2020-12-03 05:16:12.492 Built 19:36:25 Nov 12 2020 (GitID #c800a4d)
-// I: 2020-12-03 20:07:45.951 MMDVM protocol version: 1, description: MMDVM_HS_Dual_Hat-v1.5.2 20201108 14.7456MHz dual ADF7021 FW by CA6JAU GitID #89daa20
-// I: 2020-12-03 20:07:45.973     Callsign: DG9VH
-// I: 2020-12-03 20:07:43.940     Id: 262509403
-// I: 2020-12-03 20:07:45.973     RX Frequency: 430412500Hz
-// I: 2020-12-03 20:07:45.973     TX Frequency: 439812500Hz
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		var duration = 0;
@@ -406,9 +377,8 @@ function getLastHeard(document, event) {
 						if (rowIndexes[0]) {
 							if (rowIndexes[0] == "0") {
 								t_lh.row(rowIndexes[0]).remove().draw(false);
-								//rowIndexes[0] = rowIndexes[1];
 							}
-							logIt(t_lh.row(rowIndexes[0]));
+							logIt("RowIndex[0]: " + rowIndexes[0]);
 							if (t_lh.row(rowIndexes[0]).data[0] != null) {
 								newData = [
 									t_lh.row(rowIndexes[0]).data[0],
@@ -425,7 +395,6 @@ function getLastHeard(document, event) {
 								$('#lastHeard').dataTable().fnUpdate(newData,rowIndexes[0],undefined,false);
 							} else {
 								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
-								//t_lh.row(rowIndexes[0]).remove().draw(false);
 							}
 						} 
 					}
@@ -467,7 +436,6 @@ function getLastHeard(document, event) {
 					});
 					if (rowIndexes[0] == "0") {
 						t_lh.row(rowIndexes[0]).remove().draw(false);
-						//rowIndexes[0] = rowIndexes[1];
 					}
 					if (rowIndexes[0]) {
 						
@@ -497,9 +465,6 @@ function getLastHeard(document, event) {
 						] ).draw(false);
 					}
 				}
-				/*if (rowIndexes[0] == "0") {
-					rowIndexes[0] = rowIndexes[1];
-				}*/
 				if (rowIndexes[0]) {
 					var row = t_lh.row(rowIndexes[0]).node();
 					if (txing) {
@@ -578,7 +543,7 @@ function getDapnetMessages(document, event) {
 				if (messagecount > emergencylevel) {
 					document.getElementById('messagesinqueue').className = "badge badge-danger";
 				}
-				 document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
+				document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 			}
 			if (line.indexOf("Rejecting") > 0 ) {
 				 messagecount--;
@@ -593,7 +558,6 @@ function getDapnetMessages(document, event) {
 					if (messagecount > emergencylevel) {
 						document.getElementById('messagesinqueue').className = "badge badge-danger";
 					}
-					
 					document.getElementById('messagesinqueue').innerHTML = "Messages in Queue: " + messagecount;
 				}
 			}
