@@ -55,7 +55,7 @@ function getTimezone() {
 }
 
 function isDMRHost(logline) {
-	if (logline.charAt(22) == " " )
+	if (logline.charAt(22) == " ")
 		return true;
 	else
 		return false;
@@ -317,7 +317,6 @@ function getLastHeard(document, event) {
 				document.getElementById("callsign").innerHTML = callsign;
 			}
 			
-			
 			if (line.indexOf("Id:") > 0 ) {
 				dmrid = line.substring(line.indexOf("Id:") + 4);
 				document.getElementById("dmrid").innerHTML = dmrid;
@@ -485,6 +484,7 @@ function getLastHeard(document, event) {
 }
 
 function getLocalHeard(document, event) {
+	
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
