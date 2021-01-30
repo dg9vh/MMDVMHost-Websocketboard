@@ -4,6 +4,22 @@ var ts2TXing = null;
 var ts1timestamp = "";
 var ts2timestamp = "";
 
+// Setting config-defaults if not set
+qrz = typeof(qrz) == 'undefined' ? 1 : qrz;
+debug = typeof(debug) == 'undefined' ? 0 : debug;
+warnlevel = typeof(warnlevel) == 'undefined' ? 200 : warnlevel;
+emergencylevel = typeof(emergencylevel) == 'undefined' ? 500 : emergencylevel;
+useClientTimezone = typeof(useClientTimezone) == 'undefined' ? 1 : useClientTimezone;
+showBMTGLink = typeof(showBMTGLink) == 'undefined' ? 1 : showBMTGLink;
+currtx = typeof(currtx) == 'undefined' ? 1 : currtx;
+lastheard = typeof(lastheard) == 'undefined' ? 1 : lastheard;
+localheard = typeof(localheard) == 'undefined' ? 1 : localheard;
+allheard = typeof(allheard) == 'undefined' ? 1 : allheard;
+qso = typeof(qso) == 'undefined' ? 1 : qso;
+dapnet = typeof(dapnet) == 'undefined' ? 1 : dapnet;
+sysinfo = typeof(sysinfo) == 'undefined' ? 1 : sysinfo;
+about = typeof(about) == 'undefined' ? 1 : about;
+
 setInterval(getCurrentTXing, 1000);
 
 function logIt(message) {
@@ -618,6 +634,7 @@ function activateDefaultTab(name) {
 }
 
 $(document).ready(function() {
+	defaultSet = false;
 	for (i = 0; i < document.getElementById("myTab").children.length; ++i) {
 		tabname = document.getElementById("myTab").children[i].getAttribute("name");
 		if (eval(tabname) == 0) {
@@ -626,6 +643,9 @@ $(document).ready(function() {
 		}
 		if (eval(tabname) == 2) {
 			activateDefaultTab(tabname);
+			defaultSet = true;
 		}
+		if (!defaultSet)
+			activateDefaultTab("lastheard");
 	}
 });
