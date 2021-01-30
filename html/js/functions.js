@@ -211,21 +211,6 @@ function decodeSkyperRubric(rubric) {
 	return "Skyper-Rubric Announcement: No.: " + ric + ": " + name;
 }
 
-function clocktime() {
-	var now = new Date(),
-		h = now.getHours(),
-		m = now.getMinutes(),
-		s = now.getSeconds();
-	m = leadingZero(m);
-	s = leadingZero(s);
-	return h + ':' + m + ':' + s;
-}
-
-function leadingZero(zahl) {
-	zahl = (zahl < 10 ? '0' : '' )+ zahl;  
-	return zahl;
-}
-
 function copyToQSO(callsign) {
 	$(document).ready(function() {
 		var date = new Date().toISOString().split('T')
