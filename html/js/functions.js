@@ -602,100 +602,48 @@ function getSysInfo(document, event) {
 	});
 }
 
+function activateDefaultTab(name) {
+	var element = document.getElementById(name + "-tab");
+	element.classList.add("active");
+	
+	var element = document.getElementById(name);
+	element.classList.add("show");
+	element.classList.add("active");
+}
+
 $(document).ready(function() {
-	if(showCurrTXTab == 0){
-		document.getElementById("myTab").children[0].style.display="none";
-		document.getElementById("currtx").style.display="none";
-	}
-	if(showLastHeardTab == 0){
-		document.getElementById("myTab").children[1].style.display="none";
-		document.getElementById("lastheard").style.display="none";
-	}
-	if(showLocalHeadTab == 0){
-		document.getElementById("myTab").children[2].style.display="none";
-		document.getElementById("localheard").style.display="none";
-	}
-	if(showInQSOTab == 0){
-		document.getElementById("myTab").children[3].style.display="none";
-		document.getElementById("qso").style.display="none";
-	}
-	if(showDAPNETMessagesTab == 0){
-		document.getElementById("myTab").children[4].style.display="none";
-		document.getElementById("dapnet").style.display="none";
-	}
-	if(showSysInfoTab == 0){
-		document.getElementById("myTab").children[5].style.display="none";
-		document.getElementById("sysinfo").style.display="none";
-	}
-	if(showAboutTab == 0){
-		document.getElementById("myTab").children[6].style.display="none";
-		document.getElementById("about").style.display="none";
+	for (i = 0; i < document.getElementById("myTab").children.length; ++i) {
+		tabname = document.getElementById("myTab").children[i].getAttribute("name");
+		if (eval(tabname) == 0) {
+			document.getElementById("myTab").children[i].style.display="none";
+			document.getElementById(tabname).style.display="none";
+		}
 	}
 	
 	switch (defaultTab) {
 		case "CurrTXTab":
-			var element = document.getElementById("currtx-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("currtx");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("currtx");
 			break;
 		case "LastHeardTab":
-			var element = document.getElementById("lastheard-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("lastheard");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("lastheard");
 			break;
 		case "LocalHeadTab":
-			var element = document.getElementById("localheard-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("localheard");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("localheard");
 			break;
 		case "InQSOTab":
-			var element = document.getElementById("qso-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("qso");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("qso");
 			break;
 		case "DAPNETMessagesTab":
-			var element = document.getElementById("dapnet-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("dapnet");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("dapnet");
 			break;
 		case "SysInfoTab":
-			var element = document.getElementById("sysinfo-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("sysinfo");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("sysinfo");
 			break;
 		case "AboutTab":
-			var element = document.getElementById("about-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("about");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("about");
 			break;
 		default:
-			var element = document.getElementById("currtx-tab");
-			element.classList.add("active");
-			
-			var element = document.getElementById("currtx");
-			element.classList.add("show");
-			element.classList.add("active");
+			activateDefaultTab("currtx");
 			break;
 	}
 });

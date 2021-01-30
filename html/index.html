@@ -37,25 +37,25 @@
 		</nav>
 		
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
-			<li class="nav-item">
+			<li class="nav-item" name="currtx">
 				<a class="nav-link" id="currtx-tab" data-toggle="tab" href="#currtx" role="tab" aria-controls="currtx" aria-selected="true">Currently TXing</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="lastheard">
 				<a class="nav-link" id="lastheard-tab" data-toggle="tab" href="#lastheard" role="tab" aria-controls="lastheard" aria-selected="false">Last Heard</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="localheard">
 				<a class="nav-link" id="localheard-tab" data-toggle="tab" href="#localheard" role="tab" aria-controls="localheard" aria-selected="false">Local Heard</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="qso">
 				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="dapnet">
 				<a class="nav-link" id="dapnet-tab" data-toggle="tab" href="#dapnet" role="tab" aria-controls="dapnet" aria-selected="false">DAPNET Messages</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="sysinfo">
 				<a class="nav-link" id="sysinfo-tab" data-toggle="tab" href="#sysinfo" role="tab" aria-controls="sysinfo" aria-selected="false">System Info</a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" name="about">
 				<a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
 			</li>
 		</ul>
@@ -293,7 +293,7 @@
 				"order": [[ 0, "desc" ]]
 			} );
 			
-			if (showSysInfoTab) {
+			if (sysinfo > 0) {
 				var ws3 = new WebSocket("ws://" + window.location.hostname + ":5678/SYSINFO");
 				ws3.onmessage = function (event) {
 					getSysInfo(document, event);
@@ -327,7 +327,7 @@
 				t_qso.row('.selected').remove().draw( false );
 			} );
 			
-			if (showDAPNETMessagesTab) {
+			if (dapnet > 0) {
 				var ws2 = new WebSocket("ws://" + window.location.hostname + ":5678/DAPNET");
 				ws2.onmessage = function (event) {
 					getDapnetMessages(document, event);
