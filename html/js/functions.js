@@ -504,6 +504,27 @@ function getLocalHeard(document, event) {
 	});
 }
 
+function getAllHeard(document, event) {
+	$(document).ready(function() {
+		lines = event.data.split("\n");
+		lines.forEach(function(line, index, array) {
+			if (line.indexOf("network watchdog") < 0 ) {
+				if (getDuration(line) !== "") {
+					t_allh.row.add( [
+						getTimestamp(line),
+						getMode(line),
+						getCallsign(line),
+						getTarget(line),
+						getSource(line),
+						getDuration(line),
+						getBER(line)
+					] ).draw(false);
+				}
+			}
+		});
+	});
+}
+
 function getDapnetMessages(document, event) {
 	$(document).ready(function() {
 		lines = event.data.split("\n");
@@ -618,32 +639,8 @@ $(document).ready(function() {
 			document.getElementById("myTab").children[i].style.display="none";
 			document.getElementById(tabname).style.display="none";
 		}
-	}
-	
-	switch (defaultTab) {
-		case "CurrTXTab":
-			activateDefaultTab("currtx");
-			break;
-		case "LastHeardTab":
-			activateDefaultTab("lastheard");
-			break;
-		case "LocalHeadTab":
-			activateDefaultTab("localheard");
-			break;
-		case "InQSOTab":
-			activateDefaultTab("qso");
-			break;
-		case "DAPNETMessagesTab":
-			activateDefaultTab("dapnet");
-			break;
-		case "SysInfoTab":
-			activateDefaultTab("sysinfo");
-			break;
-		case "AboutTab":
-			activateDefaultTab("about");
-			break;
-		default:
-			activateDefaultTab("currtx");
-			break;
+		if (eval(tabname) == 2) {
+			activateDefaultTab(tabname);
+		}
 	}
 });

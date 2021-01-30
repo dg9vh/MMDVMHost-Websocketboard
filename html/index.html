@@ -46,6 +46,9 @@
 			<li class="nav-item" name="localheard">
 				<a class="nav-link" id="localheard-tab" data-toggle="tab" href="#localheard" role="tab" aria-controls="localheard" aria-selected="false">Local Heard</a>
 			</li>
+			<li class="nav-item" name="allheard">
+				<a class="nav-link" id="allheard-tab" data-toggle="tab" href="#allheard" role="tab" aria-controls="allheard" aria-selected="false">All Heard</a>
+			</li>
 			<li class="nav-item" name="qso">
 				<a class="nav-link" id="qso-tab" data-toggle="tab" href="#qso" role="tab" aria-controls="qso" aria-selected="false">In QSO</a>
 			</li>
@@ -118,6 +121,33 @@
 						<!-- Tabelle -->
 						<div class="table-responsive">
 							<table id="localHeard" class="table localHeard table-condensed table-striped table-hover">
+								<thead>
+									<tr>
+										
+										<th>Time (<script language="JavaScript">
+										document.write(getTimezone());
+										</script>)</th>
+										<th>Mode</th>
+										<th>Callsign</th>
+										<th>Target</th>
+										<th>Source</th>
+										<th>Dur (s)</th>
+										<th>BER</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="allheard" role="tabpanel" aria-labelledby="allheard-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">ALl Heard List<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+						<!-- Tabelle -->
+						<div class="table-responsive">
+							<table id="allHeard" class="table allHeard table-condensed table-striped table-hover">
 								<thead>
 									<tr>
 										
@@ -278,25 +308,34 @@
 				"autoWidth": false
 			} );
 			
+			var t_allh = $('#allHeard').DataTable( {
+				"order": [[ 0, "desc" ]],
+				"columnDefs": [
+						{ className: "dt-nowrap", "targets": [ 0, 1, 2, 3, 6 ] }
+					],
+				"autoWidth": false
+			} );
+			
 			var t_dapnet = $('#dapnetmessages').DataTable( {
 				"order": [[ 0, "desc" ]]
 			} );
 			
 			if (sysinfo > 0) {
-				var ws3 = new WebSocket("ws://" + window.location.hostname + ":5678/SYSINFO");
-				ws3.onmessage = function (event) {
+				var ws0 = new WebSocket("ws://" + window.location.hostname + ":5678/SYSINFO");
+				ws0.onmessage = function (event) {
 					getSysInfo(document, event);
 				};
 			}
 			
 			var ws1 = new WebSocket("ws://" + window.location.hostname + ":5678/MMDVM");
 			ws1.onmessage = function (event) {
-				getLastHeard(document, event);
-				getLocalHeard(document, event);
+				if (lastheard > 0)
+					getLastHeard(document, event);
+				if (localheard > 0)
+					getLocalHeard(document, event);
+				if (allheard > 0)
+					getAllHeard(document, event);
 			};
-			t_lh.order( [ 0, 'desc' ] ).draw();
-			t_localh.order( [ 0, 'desc' ] ).draw();
-			
 			
 			var t_qso = $('#inQSO').DataTable( {
 				"order": [[ 2, "asc" ]],

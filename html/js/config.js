@@ -9,18 +9,15 @@ var warnlevel = 200;
 var emergencylevel = 500;
 
 
-// 1 = show tab, 0 = suppress it
+// 1 = show tab, 2 = show tab and make it default-tab on startup, 0 = suppress it
 var currtx = 1;
-var lastheard = 1;
+var lastheard = 2;
 var localheard = 1;
+var allheard = 1;
 var qso = 1;
 var dapnet = 1;
 var sysinfo = 1;
 var about = 1;
-
-// default-tab to show
-// chose from following list: CurrTXTab, LastHeardTab, LocalHeadTab, InQSOTab, DAPNETMessagesTab, SysInfoTab, AboutTab
-var defaultTab = "LastHeardTab";
 
 // Set displayed timezone and timestamp to timezone of browser if 1, else use UTC for displaying
 var useClientTimezone = 1;
