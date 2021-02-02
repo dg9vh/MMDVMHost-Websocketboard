@@ -149,9 +149,34 @@ function getLoss(logline) {
 	}
 }
 
+function getRSSI(logline) {
+	rssi_raw = logline.substring(logline.lastIndexOf("RSSI:"));
+	rssi = parseInt(rssi_raw.substring(rssi_raw.lastIndexOf("/")+1, rssi_raw.lastIndexOf("dBm")-1));
+	if (rssi > "-53") retval = "<img src=\"images/4.png\" \> <div class=\"tooltip2\">S9<sup> +40dB</sup> (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-63") retval = "<img src=\"images/4.png\" \> <div class=\"tooltip2\">S9<sup> +30dB</sup> (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-73") retval = "<img src=\"images/4.png\" \> <div class=\"tooltip2\">S9<sup> +20dB</sup> (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-83") retval = "<img src=\"images/4.png\" \> <div class=\"tooltip2\">S9<sup> +10dB</sup> (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-93") retval = "<img src=\"images/4.png\" \> <div class=\"tooltip2\">S9 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-99") retval = "<img src=\"images/3.png\" \> <div class=\"tooltip2\">S8 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-105") retval = "<img src=\"images/3.png\" \> <div class=\"tooltip2\">S7 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-111") retval = "<img src=\"images/2.png\" \> <div class=\"tooltip2\">S6 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-117") retval = "<img src=\"images/2.png\" \> <div class=\"tooltip2\">S5 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-123") retval = "<img src=\"images/1.png\" \> <div class=\"tooltip2\">S4 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-129") retval = "<img src=\"images/1.png\" \> <div class=\"tooltip2\">S3 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-135") retval = "<img src=\"images/0.png\" \> <div class=\"tooltip2\">S2 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	else if (rssi > "-141") retval = "<img src=\"images/0.png\" \> <div class=\"tooltip2\">S1 (" + rssi + " dBm)<span class=\"tooltip2text\">(min/max/avg)<br>" + rssi_raw + "</span></div>";
+	return retval;
+}
+
 function getBER(logline) {
 	if(logline.lastIndexOf("BER") > 0) {
-		return logline.substring(logline.lastIndexOf("BER") + 4);
+		if(logline.lastIndexOf("RSSI:") > 0) {
+			retval = logline.substring(logline.lastIndexOf("BER") + 4, logline.lastIndexOf("RSSI:"));
+			retval += " " + getRSSI(logline);
+			return retval;
+		} else {
+			return logline.substring(logline.lastIndexOf("BER") + 4);
+		}
 	} else {
 		return "";
 	}
