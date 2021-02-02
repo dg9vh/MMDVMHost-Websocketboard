@@ -19,6 +19,7 @@
 		<!-- Datatables -->
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 		<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="js/version.js"></script>
 		<script type="text/javascript" src="js/config.js"></script>
 		<script type="text/javascript" src="metar.js/metar.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
@@ -222,6 +223,12 @@
 					<!-- Standard-Panel-Inhalt -->
 					<div class="panel-heading">System Info<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
 					<div class="panel-body">
+						<b>Dashboard:</b>
+						<ul>
+							<li>Version: <script>
+							document.write(dashboard_version);
+							</script></li>
+						</ul>
 						<b>CPU:</b>
 						<ul>
 							<li>Temperature: <span id="cputemp"></span> °C</li>
