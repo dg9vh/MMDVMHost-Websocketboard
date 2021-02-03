@@ -217,14 +217,6 @@ def log_close(websocket, path, exception=None):
 
 
 def websocketserver():
-    '''    # set first argument for the handler to current working directory
-    handler = functools.partial(process_request, os.getcwd())
-    start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'], process_request=handler)
-    asyncio.get_event_loop().run_until_complete(start_server)
-    message = 'Started Websocketserver at {}:{}'.format(config['DEFAULT']['Host'], config['DEFAULT']['Port'])
-    logging.info(message)
-    asyncio.get_event_loop().run_forever()
-    '''
     start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'])
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
@@ -252,7 +244,7 @@ def main():
             if line.find("\t"):
                 separator = "\t"
             tokens = line.split(separator)
-            dmrids[tokens[0]] = tokens[1]
+            dmrids[tokens[0]] = tokens[1] + "$" + tokens[2].replace("\r", "").replace("\n", "") + "$"
     
     logging.info("Starting Websocketserver")
     websocketserver()

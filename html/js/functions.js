@@ -87,16 +87,29 @@ function getMode(logline) {
 
 function getCallsign(logline) {
 	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+	name = "";
+	if (callsign.indexOf("$") > 0) {
+		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		callsign = callsign.substring(0, callsign.indexOf("$"));
+	}
 	if (qrz == 1) {
-		return '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+		if (name != "") {
+			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+		} else {
+			return '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+		}
 	} else {
-		return callsign;
+		if (name != "") {
+			return '<div class=\"tooltip2\">' + callsign + '<span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+		} else {
+			return callsign;
+		}
 	}
 }
 
 function getRawTarget(logline) {
-	if(logline.indexOf("at") > 0 && logline.indexOf("late entry") < 0 ) {
-		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf("at"));
+	if(logline.indexOf(" at ") > 0 && logline.indexOf("late entry") < 0 ) {
+		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf(" at ") + 1);
 	} else {
 		val = logline.substring(logline.indexOf("to") + 3);
 		if (val.indexOf(",") > 0) {
@@ -265,6 +278,28 @@ function copyToQSO(callsign) {
 	
 }
 
+function getCallsign(logline) {
+	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+	name = "";
+	if (callsign.indexOf("$") > 0) {
+		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		callsign = callsign.substring(0, callsign.indexOf("$"));
+	}
+	if (qrz == 1) {
+		if (name != "") {
+			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+		} else {
+			return '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+		}
+	} else {
+		if (name != "") {
+			return '<div class=\"tooltip2\">' + callsign + '<span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+		} else {
+			return callsign;
+		}
+	}
+}
+
 function getCurrentTXing() {
 	ts1 = null;
 	ts2 = null;
@@ -290,6 +325,25 @@ function getCurrentTXing() {
 	}
 	t_ct.clear().draw(false);
 	if (ts1 != null) {
+		callsign = ts1[1];
+		name = "";
+		if (callsign.indexOf("$") > 0) {
+			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+			callsign = callsign.substring(0, callsign.indexOf("$"));
+		}
+		if (qrz == 1) {
+			if (name != "") {
+				ts1[1] = '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+			} else {
+				ts1[1] =  '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+			}
+		} else {
+			if (name != "") {
+				ts1[1] =  '<div class=\"tooltip2\">' + callsign + '<span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+			} else {
+				ts1[1] =  callsign;
+			}
+		}
 		t_ct.row.add( [
 			ts1[0],
 			ts1[1],
@@ -299,6 +353,25 @@ function getCurrentTXing() {
 		] ).draw(false);
 	}
 	if (ts2 != null) {
+		callsign = ts2[1];
+		name = "";
+		if (callsign.indexOf("$") > 0) {
+			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+			callsign = callsign.substring(0, callsign.indexOf("$"));
+		}
+		if (qrz == 1) {
+			if (name != "") {
+				ts2[1] = '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+			} else {
+				ts2[1] =  '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+			}
+		} else {
+			if (name != "") {
+				ts2[1] =  '<div class=\"tooltip2\">' + callsign + '<span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+			} else {
+				ts2[1] =  callsign;
+			}
+		}
 		t_ct.row.add( [
 			ts2[0],
 			ts2[1],
@@ -319,7 +392,7 @@ function getLastHeard(document, event) {
 		lines = event.data.split("\n");
 		var duration = 0;
 		lines.forEach(function(line, index, array) {
-			logIt(line);
+			logIt("LogLine: " + line);
 			
 			if (line.indexOf("MMDVMHost") > 0 ) {
 				mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
