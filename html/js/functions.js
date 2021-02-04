@@ -220,7 +220,8 @@ function getMessage(logline) {
 	}
 	
 	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
-		message = '<a href="#" class="tooltip-test" title="' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '">' + message + '</a>';
+		//message = '<a href="#" class="tooltip-test" title="' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '">' + message + '</a>';
+		message = '<div class=\"tooltip2\">' + message + '<span class=\"tooltiptext\">Decoded Message:<br>' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '</span></div>';
 	}
 	return message;
 }
