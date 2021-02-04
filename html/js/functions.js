@@ -92,7 +92,7 @@ function getCallsign(logline) {
 		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
 		callsign = callsign.substring(0, callsign.indexOf("$"));
 	}
-	if (qrz == 1) {
+	if (qrz == 1 && isNaN(callsign)) {
 		if (name != "") {
 			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
 		} else {
@@ -285,7 +285,7 @@ function getCallsign(logline) {
 		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
 		callsign = callsign.substring(0, callsign.indexOf("$"));
 	}
-	if (qrz == 1) {
+	if (qrz == 1 && isNaN(callsign)) {
 		if (name != "") {
 			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
 		} else {
@@ -331,7 +331,7 @@ function getCurrentTXing() {
 			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
 			callsign = callsign.substring(0, callsign.indexOf("$"));
 		}
-		if (qrz == 1) {
+		if (qrz == 1 && isNaN(callsign)) {
 			if (name != "") {
 				ts1[1] = '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
 			} else {
@@ -359,7 +359,7 @@ function getCurrentTXing() {
 			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
 			callsign = callsign.substring(0, callsign.indexOf("$"));
 		}
-		if (qrz == 1) {
+		if (qrz == 1 && isNaN(callsign)) {
 			if (name != "") {
 				ts2[1] = '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
 			} else {
