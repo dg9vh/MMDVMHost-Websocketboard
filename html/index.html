@@ -330,13 +330,13 @@
 			}
 			
 			var ws1 = new WebSocket("ws://" + window.location.hostname + ":5678/MMDVM");
-			ws1.onmessage = function (event) {
+			ws1.onmessage = function (event) {/*
 				if (lastheard > 0)
 					getLastHeard(document, event);
 				if (localheard > 0)
 					getLocalHeard(document, event);
 				if (allheard > 0)
-					getAllHeard(document, event);
+					getAllHeard(document, event);*/
 			};
 			
 			var t_qso = $('#inQSO').DataTable( {

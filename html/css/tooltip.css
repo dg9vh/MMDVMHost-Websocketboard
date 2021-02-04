@@ -39,7 +39,8 @@
     /* Position the tooltip text */
     position: absolute;
     z-index: 99;
-    bottom: 125%;
+    /*bottom: -450%;*/
+	top: 0%;
     left: 50%;
     margin-left: -60px;
 
@@ -52,12 +53,12 @@
 .tooltip2 .tooltiptext::after {
     content: "";
     position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
+    top: 5%;
+    left: 0%;
+    margin-left: -10px;
     border-width: 5px;
     border-style: solid;
-    border-color: #555 transparent transparent transparent;
+    border-color:  transparent #555 transparent transparent;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
