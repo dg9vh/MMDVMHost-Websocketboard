@@ -25,3 +25,8 @@ var useClientTimezone = 1;
 // Show link to BrandMeister-LastHeard on TG if 1, else no link
 
 var showBMTGLink = 1;
+
+// Array of callsigns that should not be linked to qrz.com
+var qrz_blacklist = [
+"N0CALL",
+]
