@@ -154,17 +154,7 @@ function getTarget(logline) {
 		return target;
 	}
 }	
-/*	
-	if (showBMTGLink && getMode(logline).startsWith("DMR")) {
-		bmlink = "https://brandmeister.network/?page=lh&DestinationID=";
-		linkTarget = target.substring(3);
-		link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
-		return link;
-	} else {
-		return target;
-	}
-}
-*/
+
 function getSource(logline) {
 	val = logline.substring(logline.indexOf("received") + 9);
 	val = val.substring(0, val.indexOf(" "));
