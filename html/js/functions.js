@@ -590,11 +590,13 @@ function getLastHeard(document, event) {
 				}
 				if (rowIndexes[0]) {
 					var row = t_lh.row(rowIndexes[0]).node();
+					/*
 					if (txing) {
 						$(row).addClass('red');
 					} else {
 						$(row).removeClass('red');
 					}
+					*/
 					var temp = t_lh.row(rowIndexes[0]).data();
 					logIt("Temp: "+ temp);
 					logIt("Duration: " + duration);
