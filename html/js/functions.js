@@ -418,18 +418,18 @@ function getLastHeard(document, event) {
 		var duration = 0;
 		lines.forEach(function(line, index, array) {
 			logIt("LogLine: " + line);
-			
+			/*
 			if (line.indexOf("MMDVMHost") > 0 ) {
 				mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
 				mmdvmhost_version = mmdvmhost_version.substring(0, mmdvmhost_version.indexOf(" "));
 				document.getElementById("mmdvmhost_version").innerHTML = mmdvmhost_version;
 			}
-			
 			if (line.indexOf("Built") > 0 ) {
 				built = line.substring(line.indexOf("Built") + 6);
 				document.getElementById("built").innerHTML = built;
 			}
 			
+			*/
 			if (line.indexOf("description:") > 0 ) {
 				modem = line.substring(line.indexOf("description:") + 12);
 				document.getElementById("modem").innerHTML = modem;
@@ -745,7 +745,11 @@ function getSysInfo(document, event) {
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
 			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
+			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("mmdvmhost_version").innerHTML = data.substring(data.indexOf("mmdvmhost_version:") + 18, data.indexOf(" mmdvmhost_ctime"));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("built").innerHTML = data.substring(data.indexOf("mmdvmhost_ctime:") + 16);
 		}
 	});
 }

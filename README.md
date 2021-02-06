@@ -44,6 +44,7 @@ Actually known:
 
 ### Installation steps
 * first of all (if not already done by installation of MMDVMHost): create a syetemuser with `sudo adduser --system --no-create-home --group mmdvm`
+* add following line to /etc/sudoers with `sudo visudo` for getting the logtailer access to MMDVMHost: `www-data ALL=(ALL) NOPASSWD: /usr/local/bin/MMDVMHost`
 * clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
 * create directory with `sudo mkdir /opt/MMDVMDash`
 * copy all files from repository into this folder
@@ -63,11 +64,11 @@ Finally you should be able to get the new Dashboard calling the hostname of your
 
 ### Troubleshoting
 If you have any trouble running the software most things depend on the logtailer-component. So it is a good idea to try starting the software on the console wih
-`python3 ./logtailer.py` to see the output of the programme. A common error are missing python-libraries you should install with the commands mentioned above.
+`python3 ./logtailer.py` to see the output of the program. A common error are missing python-libraries you should install with the commands mentioned above.
 
 If you found any further missing library let me know! Just open an issue!
 
-If there are problems with paths for logfiles you also could get some impressions with the output of the programme.
+If there are problems with paths for logfiles you also could get some impressions with the output of the program.
 
 ### If using DMRHost by BrandMeister-Team
 If you are using the DMRHost as replacement for MMDVMHost you should enable DMR-ID-Lookup within logtailer.ini by setting the corresponding option = 1
@@ -80,7 +81,7 @@ For getting the best user experience it is recommended to configure your MMDVMHo
 
 `FileRotate=0`
 
-This results in having only one logfile for each programme and having it rotated by your linux-system with logrotate if configured.
+This results in having only one logfile for each program and having it rotated by your linux-system with logrotate if configured.
 
 You should also configure your logtailer.ini with
 
