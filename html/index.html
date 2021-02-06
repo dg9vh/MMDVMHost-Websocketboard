@@ -165,6 +165,7 @@
 										<th>Target</th>
 										<th>Source</th>
 										<th>Dur (s)</th>
+										<th>Loss</th>
 										<th>BER</th>
 									</tr>
 								</thead>
@@ -343,15 +344,26 @@
 						{ className: "dt-nowrap", "targets": [ 0, 1, 2, 3, 6 ] }
 					],
 				'rowCallback': function(row, data, index){
-					// Calculating BER
-					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) <= 0.5){
+					// Calculating LOSS
+					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) <= 5){
 						$(row).find('td:eq(6)').css('color', 'black');
 					}
-					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) > 0.5){
+					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) > 5){
 						$(row).find('td:eq(6)').css('color', 'orange');
 					}
-					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) > 2){
+					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) > 15){
 						$(row).find('td:eq(6)').css('color', 'red');
+					}
+					
+					// Calculating BER
+					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) <= 0.5){
+						$(row).find('td:eq(7)').css('color', 'black');
+					}
+					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) > 0.5){
+						$(row).find('td:eq(7)').css('color', 'orange');
+					}
+					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) > 2){
+						$(row).find('td:eq(7)').css('color', 'red');
 					}
 				},
 				"autoWidth": false

@@ -643,6 +643,7 @@ function getAllHeard(document, event) {
 						getTarget(line),
 						getSource(line),
 						getDuration(line),
+						getLoss(line),
 						getBER(line)
 					] ).draw(false);
 				}
