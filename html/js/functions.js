@@ -123,6 +123,40 @@ function getTarget(logline) {
 	target = getRawTarget(logline);
 	if (showBMTGLink && getMode(logline).startsWith("DMR")) {
 		bmlink = "https://brandmeister.network/?page=lh&DestinationID=";
+		linkTarget = target;
+		if (target.indexOf("TG") == 0) {
+			linkTarget = target.substring(3);
+		}
+		if (isNaN(linkTarget)) {
+			name = "";
+			if (target.indexOf("$") > 0) {
+				name = target.substring(target.indexOf("$") + 1, target.lastIndexOf("$"));
+				target = target.substring(0, target.indexOf("$"));
+			}
+			if (qrz == 1 && isNaN(target) && !qrz_blacklist.includes(target)) {
+				if (name != "") {
+					return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + target + '">' + target + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+				} else {
+					return '<a target="_new" href="https://qrz.com/db/' + target + '">' + target + '</a>';
+				}
+			} else {
+				if (name != "") {
+					return '<div class=\"tooltip2\">' + target + '<span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+				} else {
+					return target;
+				}
+			}
+		} else {
+			link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
+			return link;
+		}
+	} else {
+		return target;
+	}
+}	
+/*	
+	if (showBMTGLink && getMode(logline).startsWith("DMR")) {
+		bmlink = "https://brandmeister.network/?page=lh&DestinationID=";
 		linkTarget = target.substring(3);
 		link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
 		return link;
@@ -130,7 +164,7 @@ function getTarget(logline) {
 		return target;
 	}
 }
-
+*/
 function getSource(logline) {
 	val = logline.substring(logline.indexOf("received") + 9);
 	val = val.substring(0, val.indexOf(" "));
