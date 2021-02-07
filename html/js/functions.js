@@ -54,6 +54,16 @@ function getTimezone() {
 	}
 }
 
+function inDashboardBlacklist(logline) {
+	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+	name = "";
+	if (callsign.indexOf("$") > 0) {
+		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		callsign = callsign.substring(0, callsign.indexOf("$"));
+	}
+	return dashboard_blacklist.includes(callsign);
+}
+
 function isDMRHost(logline) {
 	if (logline.charAt(22) == " ")
 		return true;
@@ -418,190 +428,192 @@ function getLastHeard(document, event) {
 		var duration = 0;
 		lines.forEach(function(line, index, array) {
 			logIt("LogLine: " + line);
-			/*
-			if (line.indexOf("MMDVMHost") > 0 ) {
-				mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
-				mmdvmhost_version = mmdvmhost_version.substring(0, mmdvmhost_version.indexOf(" "));
-				document.getElementById("mmdvmhost_version").innerHTML = mmdvmhost_version;
-			}
-			if (line.indexOf("Built") > 0 ) {
-				built = line.substring(line.indexOf("Built") + 6);
-				document.getElementById("built").innerHTML = built;
-			}
-			
-			*/
-			if (line.indexOf("description:") > 0 ) {
-				modem = line.substring(line.indexOf("description:") + 12);
-				document.getElementById("modem").innerHTML = modem;
-			}
-			
-			if (line.indexOf("Callsign:") > 0 ) {
-				callsign = line.substring(line.indexOf("Callsign:") + 10);
-				document.getElementById("callsign").innerHTML = callsign;
-			}
-			
-			if (line.indexOf("Id:") > 0 ) {
-				dmrid = line.substring(line.indexOf("Id:") + 4);
-				document.getElementById("dmrid").innerHTML = dmrid;
-			}
-			
-			if (line.indexOf("RX Frequency:") > 0 ) {
-				rxqrg = line.substring(line.indexOf("RX Frequency:") + 14, 54);
-				document.getElementById("rxqrg").innerHTML = getMHZ(rxqrg) + " MHz";
-			}
-			
-			if (line.indexOf("TX Frequency:") > 0 ) {
-				txqrg = line.substring(line.indexOf("TX Frequency:") + 14, 54);
-				document.getElementById("txqrg").innerHTML = getMHZ(txqrg) + " MHz";
-			}
-			
-			txing = false;
-			if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0)) {
-				if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("received RF header") > 0) {
-					txing = true;
-					if (getMode(line) == "DMR Slot 1" ) {
-						ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
-						ts1timestamp = getRawTimestamp(line);
-					} else {
-						ts2TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
-						ts2timestamp = getRawTimestamp(line);
-					}
+			if (!inDashboardBlacklist(line)) {
+				/*
+				if (line.indexOf("MMDVMHost") > 0 ) {
+					mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
+					mmdvmhost_version = mmdvmhost_version.substring(0, mmdvmhost_version.indexOf(" "));
+					document.getElementById("mmdvmhost_version").innerHTML = mmdvmhost_version;
 				}
-				if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0) {
-					if (getMode(line) == "DMR Slot 1" ) {
-						ts1TXing = null;
-					} else {
-						ts2TXing = null;
-					}
-					txing = false;
-					
-					if (line.indexOf("network watchdog") > 0) {
-						logIt("Network Watchdog!");
-						
-						var rowIndexes = [];
-						t_lh.rows( function ( idx, data, node ) {
-							if (getMode(line) == "DMR Slot 1" ) {
-								if(data[0] == getLocaltimeFromTimestamp(ts1timestamp)){
-									rowIndexes.push(idx);
-								}
-								return false;
-							} else {
-								if(data[0] == getLocaltimeFromTimestamp(ts2timestamp)){
-									rowIndexes.push(idx);
-								}
-							}
-						});
-						if (getMode(line) == "DMR Slot 1" ) {
-							duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts1timestamp.replace(" ","T")+".000Z")/1000);
-						} else {
-							duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts2timestamp.replace(" ","T")+".000Z")/1000);
-						}
-						logIt("RowIndexes: " + rowIndexes);
-						if (rowIndexes[0]) {
-							if (rowIndexes[0] == "0") {
-								t_lh.row(rowIndexes[0]).remove().draw(false);
-							}
-							logIt("RowIndex[0]: " + rowIndexes[0]);
-							if (t_lh.row(rowIndexes[0]).data[0] != null) {
-								newData = [
-									t_lh.row(rowIndexes[0]).data[0],
-									t_lh.row(rowIndexes[0]).data[1],
-									t_lh.row(rowIndexes[0]).data[2],
-									t_lh.row(rowIndexes[0]).data[3],
-									t_lh.row(rowIndexes[0]).data[4],
-									duration,
-									"",
-									"",
-									getAddToQSO(line)
-								]
-								logIt(t_lh.row(rowIndexes[0]).data[2])
-								$('#lastHeard').dataTable().fnUpdate(newData,rowIndexes[0],undefined,false);
-							} else {
-								logIt("Problem replacing watchdog! Indices: " + rowIndexes);
-							}
-						} 
-					}
+				if (line.indexOf("Built") > 0 ) {
+					built = line.substring(line.indexOf("Built") + 6);
+					document.getElementById("built").innerHTML = built;
 				}
-				logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
-				logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
-				getCurrentTXing();
 				
-				if (line.indexOf("network watchdog") < 0 ) {
-					var rowIndexes = [],
-						timestamp = getTimestamp(line),
-						mode = getMode(line),
-						callsign = getCallsign(line),
-						target = getTarget(line),
-						source = getSource(line),
-						duration = getDuration(line),
-						loss = getLoss(line),
-						ber = getBER(line),
-						addToQSO = getAddToQSO(line);
-					if (txing) {
-						duration = "TXing";
-						loss = "";
-						ber = "";
-					}
-					if (mode == "POCSAG") {
-						callsign = "POCSAG";
-						target = "";
-						source = "";
-						duration = "";
-						loss = "";
-						ber = "";
-						addToQSO = "";
-					}
-					t_lh.rows( function ( idx, data, node ) {
-						if(data[2] == callsign){
-							rowIndexes.push(idx);
+				*/
+				if (line.indexOf("description:") > 0 ) {
+					modem = line.substring(line.indexOf("description:") + 12);
+					document.getElementById("modem").innerHTML = modem;
+				}
+				
+				if (line.indexOf("Callsign:") > 0 ) {
+					callsign = line.substring(line.indexOf("Callsign:") + 10);
+					document.getElementById("callsign").innerHTML = callsign;
+				}
+				
+				if (line.indexOf("Id:") > 0 ) {
+					dmrid = line.substring(line.indexOf("Id:") + 4);
+					document.getElementById("dmrid").innerHTML = dmrid;
+				}
+				
+				if (line.indexOf("RX Frequency:") > 0 ) {
+					rxqrg = line.substring(line.indexOf("RX Frequency:") + 14, 54);
+					document.getElementById("rxqrg").innerHTML = getMHZ(rxqrg) + " MHz";
+				}
+				
+				if (line.indexOf("TX Frequency:") > 0 ) {
+					txqrg = line.substring(line.indexOf("TX Frequency:") + 14, 54);
+					document.getElementById("txqrg").innerHTML = getMHZ(txqrg) + " MHz";
+				}
+				
+				txing = false;
+				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0)) {
+					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("received RF header") > 0) {
+						txing = true;
+						if (getMode(line) == "DMR Slot 1" ) {
+							ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+							ts1timestamp = getRawTimestamp(line);
+						} else {
+							ts2TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
+							ts2timestamp = getRawTimestamp(line);
 						}
-						return false;
-					});
-					if (rowIndexes[0] == "0") {
-						t_lh.row(rowIndexes[0]).remove().draw(false);
+					}
+					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0) {
+						if (getMode(line) == "DMR Slot 1" ) {
+							ts1TXing = null;
+						} else {
+							ts2TXing = null;
+						}
+						txing = false;
+						
+						if (line.indexOf("network watchdog") > 0) {
+							logIt("Network Watchdog!");
+							
+							var rowIndexes = [];
+							t_lh.rows( function ( idx, data, node ) {
+								if (getMode(line) == "DMR Slot 1" ) {
+									if(data[0] == getLocaltimeFromTimestamp(ts1timestamp)){
+										rowIndexes.push(idx);
+									}
+									return false;
+								} else {
+									if(data[0] == getLocaltimeFromTimestamp(ts2timestamp)){
+										rowIndexes.push(idx);
+									}
+								}
+							});
+							if (getMode(line) == "DMR Slot 1" ) {
+								duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts1timestamp.replace(" ","T")+".000Z")/1000);
+							} else {
+								duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts2timestamp.replace(" ","T")+".000Z")/1000);
+							}
+							logIt("RowIndexes: " + rowIndexes);
+							if (rowIndexes[0]) {
+								if (rowIndexes[0] == "0") {
+									t_lh.row(rowIndexes[0]).remove().draw(false);
+								}
+								logIt("RowIndex[0]: " + rowIndexes[0]);
+								if (t_lh.row(rowIndexes[0]).data[0] != null) {
+									newData = [
+										t_lh.row(rowIndexes[0]).data[0],
+										t_lh.row(rowIndexes[0]).data[1],
+										t_lh.row(rowIndexes[0]).data[2],
+										t_lh.row(rowIndexes[0]).data[3],
+										t_lh.row(rowIndexes[0]).data[4],
+										duration,
+										"",
+										"",
+										getAddToQSO(line)
+									]
+									logIt(t_lh.row(rowIndexes[0]).data[2])
+									$('#lastHeard').dataTable().fnUpdate(newData,rowIndexes[0],undefined,false);
+								} else {
+									logIt("Problem replacing watchdog! Indices: " + rowIndexes);
+								}
+							} 
+						}
+					}
+					logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
+					logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
+					getCurrentTXing();
+					
+					if (line.indexOf("network watchdog") < 0 ) {
+						var rowIndexes = [],
+							timestamp = getTimestamp(line),
+							mode = getMode(line),
+							callsign = getCallsign(line),
+							target = getTarget(line),
+							source = getSource(line),
+							duration = getDuration(line),
+							loss = getLoss(line),
+							ber = getBER(line),
+							addToQSO = getAddToQSO(line);
+						if (txing) {
+							duration = "TXing";
+							loss = "";
+							ber = "";
+						}
+						if (mode == "POCSAG") {
+							callsign = "POCSAG";
+							target = "";
+							source = "";
+							duration = "";
+							loss = "";
+							ber = "";
+							addToQSO = "";
+						}
+						t_lh.rows( function ( idx, data, node ) {
+							if(data[2] == callsign){
+								rowIndexes.push(idx);
+							}
+							return false;
+						});
+						if (rowIndexes[0] == "0") {
+							t_lh.row(rowIndexes[0]).remove().draw(false);
+						}
+						if (rowIndexes[0]) {
+							
+							newData = [
+								timestamp,
+								mode,
+								callsign,
+								target,
+								source,
+								duration,
+								loss,
+								ber,
+								addToQSO
+							]
+							t_lh.row(rowIndexes[0]).data( newData ).draw(false);
+						} else {
+							t_lh.row.add( [
+								timestamp,
+								mode,
+								callsign,
+								target,
+								source,
+								duration,
+								loss,
+								ber,
+								addToQSO
+							] ).draw(false);
+						}
 					}
 					if (rowIndexes[0]) {
-						
-						newData = [
-							timestamp,
-							mode,
-							callsign,
-							target,
-							source,
-							duration,
-							loss,
-							ber,
-							addToQSO
-						]
-						t_lh.row(rowIndexes[0]).data( newData ).draw(false);
-					} else {
-						t_lh.row.add( [
-							timestamp,
-							mode,
-							callsign,
-							target,
-							source,
-							duration,
-							loss,
-							ber,
-							addToQSO
-						] ).draw(false);
+						var row = t_lh.row(rowIndexes[0]).node();
+						/*
+						if (txing) {
+							$(row).addClass('red');
+						} else {
+							$(row).removeClass('red');
+						}
+						*/
+						var temp = t_lh.row(rowIndexes[0]).data();
+						logIt("Temp: "+ temp);
+						logIt("Duration: " + duration);
+						temp[5] = duration;
+						$('#lastHeard').dataTable().fnUpdate(temp,rowIndexes[0],undefined,false);
 					}
-				}
-				if (rowIndexes[0]) {
-					var row = t_lh.row(rowIndexes[0]).node();
-					/*
-					if (txing) {
-						$(row).addClass('red');
-					} else {
-						$(row).removeClass('red');
-					}
-					*/
-					var temp = t_lh.row(rowIndexes[0]).data();
-					logIt("Temp: "+ temp);
-					logIt("Duration: " + duration);
-					temp[5] = duration;
-					$('#lastHeard').dataTable().fnUpdate(temp,rowIndexes[0],undefined,false);
 				}
 			}
 		});
@@ -613,17 +625,19 @@ function getLocalHeard(document, event) {
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
-			if (getSource(line) == "RF") {
-				if (getDuration(line) !== "") {
-					t_localh.row.add( [
-						getTimestamp(line),
-						getMode(line),
-						getCallsign(line),
-						getTarget(line),
-						getSource(line),
-						getDuration(line),
-						getBER(line)
-					] ).draw(false);
+			if (!inDashboardBlacklist(line)) {
+				if (getSource(line) == "RF") {
+					if (getDuration(line) !== "") {
+						t_localh.row.add( [
+							getTimestamp(line),
+							getMode(line),
+							getCallsign(line),
+							getTarget(line),
+							getSource(line),
+							getDuration(line),
+							getBER(line)
+						] ).draw(false);
+					}
 				}
 			}
 		});
@@ -634,18 +648,20 @@ function getAllHeard(document, event) {
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
-			if (line.indexOf("network watchdog") < 0 ) {
-				if (getDuration(line) !== "") {
-					t_allh.row.add( [
-						getTimestamp(line),
-						getMode(line),
-						getCallsign(line),
-						getTarget(line),
-						getSource(line),
-						getDuration(line),
-						getLoss(line),
-						getBER(line)
-					] ).draw(false);
+			if (!inDashboardBlacklist(line)) {
+				if (line.indexOf("network watchdog") < 0 ) {
+					if (getDuration(line) !== "") {
+						t_allh.row.add( [
+							getTimestamp(line),
+							getMode(line),
+							getCallsign(line),
+							getTarget(line),
+							getSource(line),
+							getDuration(line),
+							getLoss(line),
+							getBER(line)
+						] ).draw(false);
+					}
 				}
 			}
 		});

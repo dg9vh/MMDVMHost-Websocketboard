@@ -30,3 +30,9 @@ var showBMTGLink = 1;
 var qrz_blacklist = [
 "N0CALL",
 ]
+
+// Array of callsigns that should generally not be listed on the dashboard
+
+var dashboard_blacklist = [
+"MY0CALL",
+]
