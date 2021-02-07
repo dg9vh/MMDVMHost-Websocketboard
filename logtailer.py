@@ -30,6 +30,8 @@ current_dir = os.getcwd()
 config = configparser.ConfigParser()
 config.read(current_dir + '/logtailer.ini')
 
+mmdvmhost_config = configparser.ConfigParser()
+mmdvmhost_config.read(config['MMDVMHost']['MMDVM_ini'])
 dmrids = {}
 
 # init
@@ -158,6 +160,15 @@ async def view_log(websocket, path):
                     else:
                         await asyncio.sleep(0.2)
         elif path == "/SYSINFO":
+            mmdvmhost_version = str(subprocess.Popen(config['MMDVMHost']['MMDVM_bin'] + " -v", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
+            mmdvmhost_ctime = time.ctime(os.path.getmtime(config['MMDVMHost']['MMDVM_bin']))
+            mmdvmhost_buildtime = datetime.datetime.strptime(mmdvmhost_ctime, "%a %b %d %H:%M:%S %Y")
+            callsign = mmdvmhost_config['General']['Callsign']
+            dmrid = mmdvmhost_config['General']['Id']
+            txqrg = mmdvmhost_config['Info']['TXFrequency']
+            rxqrg = mmdvmhost_config['Info']['RXFrequency']
+            await websocket.send("HOSTINFO: mmdvmhost_version:" + mmdvmhost_version + " mmdvmhost_ctime:" + mmdvmhost_ctime + " callsign:" + callsign + " dmrid:" + dmrid + " txqrg:" + txqrg + " rxqrg:" + rxqrg)
+            await asyncio.sleep(1)
             while True:
                 cpu_temp = ""
                 temps = psutil.sensors_temperatures()
@@ -188,11 +199,7 @@ async def view_log(websocket, path):
                 disk_free = str(disk.free / 2**30)
                 disk_percent_used = str(disk.percent)
                 
-                mmdvmhost_version = str(subprocess.Popen(config['MMDVMHost']['MMDVM_bin'] + " -v", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
-                
-                mmdvmhost_ctime = time.ctime(os.path.getmtime(config['MMDVMHost']['MMDVM_bin']))
-                mmdvmhost_buildtime = datetime.datetime.strptime(mmdvmhost_ctime, "%a %b %d %H:%M:%S %Y")
-                await websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used + " mmdvmhost_version:" + mmdvmhost_version + " mmdvmhost_ctime:" + mmdvmhost_ctime)
+                await websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
                 await asyncio.sleep(10)
 
     except ValueError as e:

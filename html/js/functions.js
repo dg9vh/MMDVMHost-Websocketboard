@@ -429,41 +429,9 @@ function getLastHeard(document, event) {
 		lines.forEach(function(line, index, array) {
 			logIt("LogLine: " + line);
 			if (!inDashboardBlacklist(line)) {
-				/*
-				if (line.indexOf("MMDVMHost") > 0 ) {
-					mmdvmhost_version = line.substring(line.indexOf("MMDVMHost"));
-					mmdvmhost_version = mmdvmhost_version.substring(0, mmdvmhost_version.indexOf(" "));
-					document.getElementById("mmdvmhost_version").innerHTML = mmdvmhost_version;
-				}
-				if (line.indexOf("Built") > 0 ) {
-					built = line.substring(line.indexOf("Built") + 6);
-					document.getElementById("built").innerHTML = built;
-				}
-				
-				*/
 				if (line.indexOf("description:") > 0 ) {
 					modem = line.substring(line.indexOf("description:") + 12);
 					document.getElementById("modem").innerHTML = modem;
-				}
-				
-				if (line.indexOf("Callsign:") > 0 ) {
-					callsign = line.substring(line.indexOf("Callsign:") + 10);
-					document.getElementById("callsign").innerHTML = callsign;
-				}
-				
-				if (line.indexOf("Id:") > 0 ) {
-					dmrid = line.substring(line.indexOf("Id:") + 4);
-					document.getElementById("dmrid").innerHTML = dmrid;
-				}
-				
-				if (line.indexOf("RX Frequency:") > 0 ) {
-					rxqrg = line.substring(line.indexOf("RX Frequency:") + 14, 54);
-					document.getElementById("rxqrg").innerHTML = getMHZ(rxqrg) + " MHz";
-				}
-				
-				if (line.indexOf("TX Frequency:") > 0 ) {
-					txqrg = line.substring(line.indexOf("TX Frequency:") + 14, 54);
-					document.getElementById("txqrg").innerHTML = getMHZ(txqrg) + " MHz";
 				}
 				
 				txing = false;
@@ -731,7 +699,23 @@ function getDapnetMessages(document, event) {
 
 function getSysInfo(document, event) {
 	$(document).ready(function() {
-		if (event.data.startsWith("SYSINFO")) { 
+		if (event.data.startsWith("HOSTINFO")) {
+			logIt(event.data);
+			data = event.data;
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("mmdvmhost_version").innerHTML = data.substring(data.indexOf("mmdvmhost_version:") + 18, data.indexOf(" mmdvmhost_ctime"));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("built").innerHTML = data.substring(data.indexOf("mmdvmhost_ctime:") + 16, data.indexOf(" callsign"));
+			data = data.substring(data.indexOf(" callsign") + 1);
+			document.getElementById("callsign").innerHTML = data.substring(data.indexOf("callsign:") + 9, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("dmrid").innerHTML = data.substring(data.indexOf("dmrid:") + 6, data.indexOf(" "));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("txqrg").innerHTML = getMHZ(data.substring(data.indexOf("txqrg:") + 6, data.indexOf(" "))) + " MHz";
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("rxqrg").innerHTML = getMHZ(data.substring(data.indexOf("rxqrg:") + 6)) + " MHz";
+		}
+		if (event.data.startsWith("SYSINFO")) {
 			logIt(event.data);
 			data = event.data;
 			data = data.substring(data.indexOf(" ") + 1);
@@ -761,11 +745,7 @@ function getSysInfo(document, event) {
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
 			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18, data.indexOf(" "));
-			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("mmdvmhost_version").innerHTML = data.substring(data.indexOf("mmdvmhost_version:") + 18, data.indexOf(" mmdvmhost_ctime"));
-			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("built").innerHTML = data.substring(data.indexOf("mmdvmhost_ctime:") + 16);
+			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
 		}
 	});
 }
