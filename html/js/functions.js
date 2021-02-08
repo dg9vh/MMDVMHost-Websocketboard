@@ -59,6 +59,8 @@ function inDashboardBlacklist(logline) {
 	name = "";
 	if (callsign.indexOf("$") > 0) {
 		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		if (name == "$")
+			name = "";
 		callsign = callsign.substring(0, callsign.indexOf("$"));
 	}
 	return dashboard_blacklist.includes(callsign);
@@ -119,9 +121,9 @@ function getCallsign(logline) {
 
 function getRawTarget(logline) {
 	if(logline.indexOf(" at ") > 0 && logline.indexOf("late entry") < 0 ) {
-		return logline.substring(logline.indexOf("to") + 3, logline.lastIndexOf(" at ") + 1);
+		return logline.substring(logline.indexOf(" to ") + 4, logline.lastIndexOf(" at ") + 1);
 	} else {
-		val = logline.substring(logline.indexOf("to") + 3);
+		val = logline.substring(logline.indexOf(" to ") + 4);
 		if (val.indexOf(",") > 0) {
 			val = val.substring(0, val.indexOf(","));
 		}
@@ -141,6 +143,8 @@ function getTarget(logline) {
 			name = "";
 			if (target.indexOf("$") > 0) {
 				name = target.substring(target.indexOf("$") + 1, target.lastIndexOf("$"));
+				if (name == "$")
+					name = "";
 				target = target.substring(0, target.indexOf("$"));
 			}
 			if (qrz == 1 && isNaN(target) && !qrz_blacklist.includes(target)) {
@@ -231,7 +235,18 @@ function getBER(logline) {
 
 function getAddToQSO(logline) {
 	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
-	retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
+	name = "";
+	if (callsign.indexOf("$") > 0) {
+		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		if (name == "$")
+			name = "";
+		callsign = callsign.substring(0, callsign.indexOf("$"));
+	}
+	if (name == "" ) {
+		retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
+	} else {
+		retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + ' - ' + name + '" onclick="copyToQSO(\'' + callsign + ' - ' + name + '\')">Copy</button></div>';
+	}
 	return retval;
 }
 
@@ -318,6 +333,8 @@ function getCallsign(logline) {
 	name = "";
 	if (callsign.indexOf("$") > 0) {
 		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+		if (name == "$")
+			name = "";
 		callsign = callsign.substring(0, callsign.indexOf("$"));
 	}
 	if (qrz == 1 && isNaN(callsign) && !qrz_blacklist.includes(callsign)) {
@@ -339,20 +356,48 @@ function getCurrentTXing() {
 	ts1 = null;
 	ts2 = null;
 	if (ts1TXing != null) {
+		matchstring = "";
 		ts1 = ts1TXing.split(";");
 		ts1[4] = Math.round((Date.now() - Date.parse(ts1timestamp.replace(" ","T")+".000Z"))/1000);
 		t_qso.rows( function ( idx, data, node ) {
-			if(data[0] == ts1[1]){
+			callsign = ts1[1];
+			name = "";
+			if (callsign.indexOf("$") > 0) {
+				name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+				if (name == "$")
+					name = "";
+				callsign = callsign.substring(0, callsign.indexOf("$"));
+			}
+			if (name == "" ) {
+				matchstring = callsign;
+			} else {
+				matchstring = callsign + ' - ' + name;
+			}
+			if(data[0] == matchstring){
 				data[2] = getLocaltimeFromTimestamp(ts1timestamp);
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
 		}).draw(false);
 	}
 	if (ts2TXing != null) {
+		matchstring = "";
 		ts2 = ts2TXing.split(";");
 		ts2[4] = Math.round((Date.now() - Date.parse(ts2timestamp.replace(" ","T")+".000Z"))/1000);
 		t_qso.rows( function ( idx, data, node ) {
-			if(data[0] == ts2[1]){
+						callsign = ts2[1];
+			name = "";
+			if (callsign.indexOf("$") > 0) {
+				name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+				if (name == "$")
+					name = "";
+				callsign = callsign.substring(0, callsign.indexOf("$"));
+			}
+			if (name == "" ) {
+				matchstring = callsign;
+			} else {
+				matchstring = callsign + ' - ' + name;
+			}
+			if(data[0] == matchstring){
 				data[2] = getLocaltimeFromTimestamp(ts2timestamp);
 				$('#inQSO').dataTable().fnUpdate(data,idx,undefined,false);
 			}
@@ -364,7 +409,9 @@ function getCurrentTXing() {
 		name = "";
 		if (callsign.indexOf("$") > 0) {
 			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
-			callsign = callsign.substring(0, callsign.indexOf("$"));
+			if (name == "$")
+				name = "";
+		callsign = callsign.substring(0, callsign.indexOf("$"));
 		}
 		if (qrz == 1 && isNaN(callsign) && !qrz_blacklist.includes(callsign)) {
 			if (name != "") {
@@ -392,6 +439,8 @@ function getCurrentTXing() {
 		name = "";
 		if (callsign.indexOf("$") > 0) {
 			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+			if (name == "$")
+				name = "";
 			callsign = callsign.substring(0, callsign.indexOf("$"));
 		}
 		if (qrz == 1 && isNaN(callsign) && !qrz_blacklist.includes(callsign)) {
@@ -569,13 +618,6 @@ function getLastHeard(document, event) {
 					}
 					if (rowIndexes[0]) {
 						var row = t_lh.row(rowIndexes[0]).node();
-						/*
-						if (txing) {
-							$(row).addClass('red');
-						} else {
-							$(row).removeClass('red');
-						}
-						*/
 						var temp = t_lh.row(rowIndexes[0]).data();
 						logIt("Temp: "+ temp);
 						logIt("Duration: " + duration);
