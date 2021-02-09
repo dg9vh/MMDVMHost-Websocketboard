@@ -19,6 +19,7 @@ import functools
 from http import HTTPStatus
 import subprocess
 import time
+import serial
 
 MIME_TYPES = {
     "html": "text/html",
@@ -37,6 +38,32 @@ dmrids = {}
 # init
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 conv = Ansi2HTMLConverter(inline=True)
+
+def getMMDVMVersion(port):
+    try:
+        logging.info('Modem-Port={}'.format(port))
+        ser = serial.Serial(port, baudrate = 115200)
+        logging.info('Connected!');
+        time.sleep(1)
+        logging.info('Querying version from modem');
+        ser.write(bytearray.fromhex("E0 03 00"))
+        ch = ""
+        while ch != bytearray.fromhex("01"):
+            ch = ser.read()
+        
+        version = ""
+        ch = ""
+        while ch != bytearray.fromhex("00"):
+            ch = ser.read()
+            version += ch.decode()
+        ser.close()
+        logging.info('Modem-Version={}'.format(version))
+        
+        return version
+    except Exception as e:
+        logging.info('Modem-Exception={}'.format(e))
+        return "Actually not available"
+        pass
 
 
 async def process_request(sever_root, path, request_headers):
@@ -72,6 +99,7 @@ async def process_request(sever_root, path, request_headers):
     response_headers.append('Content-Length', str(len(body)))
     logging.info("HTTP GET {} 200 OK".format(path))
     return HTTPStatus.OK, response_headers, body
+
 
 async def view_log(websocket, path):
     global config
@@ -163,11 +191,12 @@ async def view_log(websocket, path):
             mmdvmhost_version = str(subprocess.Popen(config['MMDVMHost']['MMDVM_bin'] + " -v", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
             mmdvmhost_ctime = time.ctime(os.path.getmtime(config['MMDVMHost']['MMDVM_bin']))
             mmdvmhost_buildtime = datetime.datetime.strptime(mmdvmhost_ctime, "%a %b %d %H:%M:%S %Y")
+            mmdvm_version = getMMDVMVersion(mmdvmhost_config['Modem']['Port'])
             callsign = mmdvmhost_config['General']['Callsign']
             dmrid = mmdvmhost_config['General']['Id']
             txqrg = mmdvmhost_config['Info']['TXFrequency']
             rxqrg = mmdvmhost_config['Info']['RXFrequency']
-            await websocket.send("HOSTINFO: mmdvmhost_version:" + mmdvmhost_version + " mmdvmhost_ctime:" + mmdvmhost_ctime + " callsign:" + callsign + " dmrid:" + dmrid + " txqrg:" + txqrg + " rxqrg:" + rxqrg)
+            await websocket.send("HOSTINFO: mmdvmhost_version:" + mmdvmhost_version + " mmdvmhost_ctime:" + mmdvmhost_ctime + " mmdvm_version:" + mmdvm_version + " callsign:" + callsign + " dmrid:" + dmrid + " txqrg:" + txqrg + " rxqrg:" + rxqrg)
             await asyncio.sleep(1)
             while True:
                 cpu_temp = ""
@@ -234,7 +263,6 @@ def websocketserver():
     start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'])
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
-
 
 
 def main():

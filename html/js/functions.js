@@ -478,10 +478,10 @@ function getLastHeard(document, event) {
 		lines.forEach(function(line, index, array) {
 			logIt("LogLine: " + line);
 			if (!inDashboardBlacklist(line)) {
-				if (line.indexOf("description:") > 0 ) {
+				/*if (line.indexOf("description:") > 0 ) {
 					modem = line.substring(line.indexOf("description:") + 12);
 					document.getElementById("modem").innerHTML = modem;
-				}
+				}*/
 				
 				txing = false;
 				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0)) {
@@ -747,7 +747,9 @@ function getSysInfo(document, event) {
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("mmdvmhost_version").innerHTML = data.substring(data.indexOf("mmdvmhost_version:") + 18, data.indexOf(" mmdvmhost_ctime"));
 			data = data.substring(data.indexOf(" ") + 1);
-			document.getElementById("built").innerHTML = data.substring(data.indexOf("mmdvmhost_ctime:") + 16, data.indexOf(" callsign"));
+			document.getElementById("built").innerHTML = data.substring(data.indexOf("mmdvmhost_ctime:") + 16, data.indexOf(" mmdvm_version"));
+			data = data.substring(data.indexOf(" ") + 1);
+			document.getElementById("modem").innerHTML = data.substring(data.indexOf("mmdvm_version:") + 14, data.indexOf(" callsign"));
 			data = data.substring(data.indexOf(" callsign") + 1);
 			document.getElementById("callsign").innerHTML = data.substring(data.indexOf("callsign:") + 9, data.indexOf(" "));
 			data = data.substring(data.indexOf(" ") + 1);
