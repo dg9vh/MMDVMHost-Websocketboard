@@ -36,6 +36,7 @@ Actually known:
 * ansi2html: `sudo pip3 install ansi2html`
 * gpiozero: `sudo apt install python3-gpiozero`
 * psutil: `sudo apt install python3-psutil`
+* pyserial: `sudo apt-get install python3-serial`
 
 ### Recommendations
 * take care to set Loglevel for FileLevel = 2 in your MMDVM.ini
