@@ -34,6 +34,7 @@ config.read(current_dir + '/logtailer.ini')
 mmdvmhost_config = configparser.ConfigParser()
 mmdvmhost_config.read(config['MMDVMHost']['MMDVM_ini'])
 dmrids = {}
+callsigns = {}
 
 # init
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
@@ -149,17 +150,26 @@ async def view_log(websocket, path):
                             source = line[line.index("from ") + 5:line.index("to ")].strip()
                             if source in dmrids:
                                 line = line.replace(source, dmrids[source])
+                            if source in callsigns:
+                                newval = source + "$" + callsigns[source] + "$"
+                                line = line.replace(source, newval)
                         if line.find("to ") > 0:
                             if line.find("at ") > 0 and line.find("late entry") < 0:
                                 target = line[line.index("to ") + 3:line.rindex("at ")]
                                 if target in dmrids:
                                     line = line.replace(target, dmrids[target])
+                                if target in callsigns:
+                                    newval = target + "$" + callsigns[target] + "$"
+                                    line = line.replace(target, newval)
                             else:
                                 target = line[line.index("to") + 3:]
                                 if target.find(",") > 0:
                                     target = target[0:target.index(",")]
                                 if target in dmrids:
                                     line = line.replace(target, dmrids[target])
+                                if target in callsigns:
+                                    newval = target + "$" + callsigns[target] + "$"
+                                    line = line.replace(target, newval)
                     await websocket.send(line)
 
                 while True:
@@ -173,17 +183,26 @@ async def view_log(websocket, path):
                                     source = line[line.index("from ") + 5:line.index("to ")].strip()
                                     if source in dmrids:
                                         line = line.replace(source, dmrids[source])
+                                    if source in callsigns:
+                                        newval = source + "$" + callsigns[source] + "$"
+                                        line = line.replace(source, newval)
                                 if line.find("to ") > 0:
                                     if line.find("at ") > 0 and line.find("late entry") < 0:
                                         target = line[line.index("to ") + 3:line.rindex("at ")]
                                         if target in dmrids:
                                             line = line.replace(target, dmrids[target])
+                                        if target in callsigns:
+                                            newval = target + "$" + callsigns[target] + "$"
+                                            line = line.replace(target, newval)
                                     else:
                                         target = line[line.index("to") + 3:]
                                         if target.find(",") > 0:
                                             target = target[0:target.index(",")]
                                         if target in dmrids:
                                             line = line.replace(target, dmrids[target])
+                                        if target in callsigns:
+                                            newval = target + "$" + callsigns[target] + "$"
+                                            line = line.replace(target, newval)
                             await websocket.send(line)
                     else:
                         await asyncio.sleep(0.2)
@@ -287,6 +306,7 @@ def main():
                 separator = "\t"
             tokens = line.split(separator)
             dmrids[tokens[0]] = tokens[1] + "$" + tokens[2].replace("\r", "").replace("\n", "") + "$"
+            callsigns[tokens[1]] = tokens[2].replace("\r", "").replace("\n", "")
     
     logging.info("Starting Websocketserver")
     websocketserver()
