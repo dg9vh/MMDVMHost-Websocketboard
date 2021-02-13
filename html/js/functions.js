@@ -134,7 +134,6 @@ function getRawTarget(logline) {
 function resolveTarget(timeslot, target) {
 	retval = null;
 	tmpval = talkgroups.filter(function (tg) { return tg[0] == timeslot});
-	// and tg.TG == target
 	retval = tmpval.filter(function (tg) { return tg[1] == target.substring(3, target.length)});
 	if (retval.length > 0) {
 		return retval[0][2];
