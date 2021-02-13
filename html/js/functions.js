@@ -3,7 +3,7 @@ var ts1TXing = null;
 var ts2TXing = null;
 var ts1timestamp = "";
 var ts2timestamp = "";
-
+var talkgroups = [];
 // Setting config-defaults if not set
 qrz = typeof(qrz) == 'undefined' ? 1 : qrz;
 debug = typeof(debug) == 'undefined' ? 0 : debug;
@@ -24,7 +24,7 @@ setInterval(getCurrentTXing, 1000);
 
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
-		console.log(message);
+		console.log(JSON.stringify(message));
 	}
 }
 
@@ -131,6 +131,26 @@ function getRawTarget(logline) {
 	}
 }
 
+function resolveTarget(timeslot, target) {
+	retval = null;
+	tmpval = talkgroups.filter(function (tg) { return tg[0] == timeslot});
+	// and tg.TG == target
+	retval = tmpval.filter(function (tg) { return tg[1] == target.substring(3, target.length)});
+	if (retval.length > 0) {
+		return retval[0][2];
+	} else {
+		return target;
+	}
+}
+
+function getTimeslot(mode) {
+	if (mode.startsWith("DMR")) {
+		return mode.substring(9, 10);
+	} else {
+		return null;
+	}
+}
+
 function getTarget(logline) {
 	target = getRawTarget(logline);
 	if (showBMTGLink && getMode(logline).startsWith("DMR")) {
@@ -161,11 +181,20 @@ function getTarget(logline) {
 				}
 			}
 		} else {
-			link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
-			return link;
+			if (getMode(logline).startsWith("DMR")) {
+				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + resolveTarget(getTimeslot(getMode(logline)), target) + '</a>';
+				return link;
+			} else {
+				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
+				return link;
+			}
 		}
 	} else {
-		return target;
+		if (getMode(logline).startsWith("DMR")) {
+			return resolveTarget(getTimeslot(getMode(logline)), target);
+		} else {
+			return target;
+		}
 	}
 }	
 
@@ -819,3 +848,21 @@ $(document).ready(function() {
 			activateDefaultTab("lastheard");
 	}
 });
+
+$(document).ready(function() {
+	$.ajax({
+		type: "GET",
+		url: 'http://mmdvm-hs-hat:8000/data/TG_List.csv',
+		dataType: "text",
+		success: function(data) {processData(data);}
+	});
+});
+
+function processData(data) {
+	var allRows = data.split(/\r?\n|\r/);
+	for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
+		var rowCells = allRows[singleRow].split(',');
+		talkgroups.push([rowCells[0], rowCells[1], rowCells[2]]);
+	}
+	logIt("Parsed TGs: " + talkgroups);
+}

@@ -65,7 +65,7 @@ Actually known:
 Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
 
 ### Troubleshoting
-If you have any trouble running the software most things depend on the logtailer-component. So it is a good idea to try starting the software on the console wih
+If you have any trouble running the software most things depend on the logtailer-component. So it is a good idea to try starting the software on the console with
 `python3 ./logtailer.py` to see the output of the program. A common error are missing python-libraries you should install with the commands mentioned above.
 
 If you found any further missing library let me know! Just open an issue!
@@ -78,6 +78,19 @@ Also take care to configure the filepath to the correct location of your DMRIds.
 
 For updating the DMRIds.dat you can use the script you find in scripts-folder.
 
+### Configuration of Talkgroup-Textes in "Target"-column
+You will find a file in /html/data called "TG_List.csv" that is a comma-separated file of following format:
+```
+TS,TG,LABEL
+1,263,DL Multimode BM
+2,8021,Pegasus DMR-DL
+2,2625,RLP/SL BM
+```
+First row leave untouched for orientation. The other lines contains on first column the DMR-timeslot the TG is used, second column contains the talkgroup-number and third column contains the label you want to be shown in the target-column of the dashboard.
+
+Please edit this file to your needs. It may change on developer-side from time by time so when updating keep a copy of your personal list to modify/edit it.
+
+If you do not want to have this Talkgroup-textes in your dashboard, simply remove all but the first line in this file.
 ## Best Practise Installation
 For getting the best user experience it is recommended to configure your MMDVMHost and other G4KLX-software with the following parameter:
 
