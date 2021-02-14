@@ -851,7 +851,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$.ajax({
 		type: "GET",
-		url: 'http://mmdvm-hs-hat:8000/data/TG_List.csv',
+		url: window.location.protocol + '/data/TG_List.csv',
 		dataType: "text",
 		success: function(data) {processData(data);}
 	});
