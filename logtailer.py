@@ -100,6 +100,8 @@ def getMMDVMVersionFromModem():
             mmdvm_version += ch.decode()
         ser.close()
         logging.info('Modem-Version={}'.format(mmdvm_version))
+        if len(mmdvm_version) < 5:
+            mmdvm_version = "Actually not available"
         with open("/tmp/mmdvm-version", 'w') as out:
             out.write(mmdvm_version + '\n')
         return mmdvm_version
