@@ -40,31 +40,82 @@ callsigns = {}
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 conv = Ansi2HTMLConverter(inline=True)
 
-def getMMDVMVersion(port):
+def getMMDVMVersion():
+    mmdvm_version = "Actually not available"
+    mmdvm_version = getMMDVMVersionFromLogfile()
+    if mmdvm_version == "Actually not available":
+        mmdvm_version = getMMDVMVersionFromModem()
+    if mmdvm_version == "Actually not available":
+        mmdvm_version = getMMDVMVersionFromCacheFile()
+    logging.info('Detected Modem-Version={}'.format(mmdvm_version))
+    return mmdvm_version
+
+
+def getMMDVMVersionFromLogfile():
+    global config
+    now = datetime.datetime.now(datetime.timezone.utc)
+    year = str(now.year)
+    month = str(now.month)
+    if len(month) == 1:
+        month = "0" + month
+    day = str(now.day)
+    if len(day) == 1:
+        day = "0" + day
+    
+    file_path = ""
+    if config['DEFAULT']['Filerotate'] == "True":
+        file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+"-"+year+"-"+month+"-"+day+".log"
+    else:
+        file_path = config['MMDVMHost']['Logdir']+config['MMDVMHost']['Prefix']+".log"
+    logging.info('Search version in log')
+    mmdvm_version = str(subprocess.Popen("grep -m 1 description " + file_path, shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
+    logging.info('Version from log: ' + mmdvm_version)
+    if len(mmdvm_version) > 0:
+        if mmdvm_version.index("description") > 0:
+            mmdvm_version = mmdvm_version[mmdvm_version.index("description") + 13:]
+            with open("/tmp/mmdvm-version", 'w') as out:
+                out.write(mmdvm_version + '\n')
+            return mmdvm_version
+    else:
+        return "Actually not available"
+
+
+def getMMDVMVersionFromModem():
+    global mmdvmhost_config
     try:
-        logging.info('Modem-Port={}'.format(port))
+        port = mmdvmhost_config['Modem']['Port']
         ser = serial.Serial(port, baudrate = 115200)
         logging.info('Connected!');
         time.sleep(1)
-        logging.info('Querying version from modem');
+        logging.info('Querying version from modem')
         ser.write(bytearray.fromhex("E0 03 00"))
         ch = ""
         while ch != bytearray.fromhex("01"):
             ch = ser.read()
         
-        version = ""
+        mmdvm_version = ""
         ch = ""
         while ch != bytearray.fromhex("00"):
             ch = ser.read()
-            version += ch.decode()
+            mmdvm_version += ch.decode()
         ser.close()
-        logging.info('Modem-Version={}'.format(version))
-        
-        return version
+        logging.info('Modem-Version={}'.format(mmdvm_version))
+        with open("/tmp/mmdvm-version", 'w') as out:
+            out.write(mmdvm_version + '\n')
+        return mmdvm_version
     except Exception as e:
         logging.info('Modem-Exception={}'.format(e))
         return "Actually not available"
         pass
+
+
+def getMMDVMVersionFromCacheFile():
+    mmdvm_version = "Actually not available"
+    if os.path.isfile("/tmp/mmdvm-version"):
+        with open("/tmp/mmdvm-version") as fp:
+            mmdvm_version = fp.readline()
+    logging.info('Version from cache-file: ' + mmdvm_version)
+    return mmdvm_version
 
 
 async def process_request(sever_root, path, request_headers):
@@ -210,7 +261,7 @@ async def view_log(websocket, path):
             mmdvmhost_version = str(subprocess.Popen(config['MMDVMHost']['MMDVM_bin'] + " -v", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
             mmdvmhost_ctime = time.ctime(os.path.getmtime(config['MMDVMHost']['MMDVM_bin']))
             mmdvmhost_buildtime = datetime.datetime.strptime(mmdvmhost_ctime, "%a %b %d %H:%M:%S %Y")
-            mmdvm_version = getMMDVMVersion(mmdvmhost_config['Modem']['Port'])
+            mmdvm_version = getMMDVMVersion()
             callsign = mmdvmhost_config['General']['Callsign']
             dmrid = mmdvmhost_config['General']['Id']
             txqrg = mmdvmhost_config['Info']['TXFrequency']
