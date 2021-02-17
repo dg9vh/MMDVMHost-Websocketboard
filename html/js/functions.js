@@ -131,12 +131,26 @@ function getRawTarget(logline) {
 	}
 }
 
-function resolveTarget(timeslot, target) {
+function resolveTarget(mode, timeslot, target) {
+	if (mode.startsWith("DMR")) {
+		mode = "DMR";
+	}
+	
 	retval = null;
-	tmpval = talkgroups.filter(function (tg) { return tg[0] == timeslot});
-	retval = tmpval.filter(function (tg) { return tg[1] == target.substring(3, target.length)});
+	tmpval = talkgroups.filter(function (tg) { return tg[0] == mode});
+	switch (mode) {
+		case "DMR":
+			tmpval = talkgroups.filter(function (tg) { return tg[1] == timeslot});
+			retval = tmpval.filter(function (tg) { return tg[2] == target.substring(3, target.length).trim()});
+			break;
+		case "YSF":
+			retval = tmpval.filter(function (tg) { return tg[2] == target.substring(6, target.length).trim()});
+			break;
+		default:
+			break;
+	}
 	if (retval.length > 0) {
-		return retval[0][2];
+		return retval[0][3];
 	} else {
 		return target;
 	}
@@ -180,20 +194,20 @@ function getTarget(logline) {
 				}
 			}
 		} else {
-			if (getMode(logline).startsWith("DMR")) {
-				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + resolveTarget(getTimeslot(getMode(logline)), target) + '</a>';
+			//if (getMode(logline).startsWith("DMR")) {
+				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '</a>';
 				return link;
-			} else {
+			/*} else {
 				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
 				return link;
-			}
+			}*/
 		}
 	} else {
-		if (getMode(logline).startsWith("DMR")) {
-			return resolveTarget(getTimeslot(getMode(logline)), target);
-		} else {
+		//if (getMode(logline).startsWith("DMR")) {
+			return resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target);
+		/*} else {
 			return target;
-		}
+		}*/
 	}
 }	
 
@@ -861,7 +875,7 @@ function processData(data) {
 	var allRows = data.split(/\r?\n|\r/);
 	for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
 		var rowCells = allRows[singleRow].split(',');
-		talkgroups.push([rowCells[0], rowCells[1], rowCells[2]]);
+		talkgroups.push([rowCells[0], rowCells[1], rowCells[2], rowCells[3]]);
 	}
 	logIt("Parsed TGs: " + talkgroups);
 }
