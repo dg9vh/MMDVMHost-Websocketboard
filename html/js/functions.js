@@ -140,7 +140,10 @@ function resolveTarget(mode, timeslot, target) {
 	tmpval = talkgroups.filter(function (tg) { return tg[0] == mode});
 	switch (mode) {
 		case "DMR":
-			tmpval = talkgroups.filter(function (tg) { return tg[1] == timeslot});
+			tmpval = tmpval.filter(function (tg) { return tg[1] == timeslot});
+			retval = tmpval.filter(function (tg) { return tg[2] == target.substring(3, target.length).trim()});
+			break;
+		case "P25":
 			retval = tmpval.filter(function (tg) { return tg[2] == target.substring(3, target.length).trim()});
 			break;
 		case "YSF":
