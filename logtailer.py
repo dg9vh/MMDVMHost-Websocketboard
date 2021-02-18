@@ -360,7 +360,7 @@ def main():
             tokens = line.split(separator)
             dmrids[tokens[0]] = tokens[1] + "$" + tokens[2].replace("\r", "").replace("\n", "") + "$"
             callsigns[tokens[1]] = tokens[2].replace("\r", "").replace("\n", "")
-    
+    logging.info("Loaded " + str(len(callsigns)) + " callsigns from " + dmr_id_lookupfile);
     logging.info("Starting Websocketserver")
     websocketserver()
 
