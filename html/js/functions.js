@@ -592,7 +592,12 @@ function getLastHeard(document, event) {
 								} else {
 									logIt("Problem replacing watchdog! Indices: " + rowIndexes);
 								}
-							} 
+								if (txing) {
+									$(row).addClass('red');
+								} else {
+									$(row).removeClass('red');
+								}
+							}
 						}
 					}
 					logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
