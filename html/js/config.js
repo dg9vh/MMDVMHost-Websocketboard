@@ -2,7 +2,7 @@
 var qrz = 1;
 
 // 1 = enable debug in javascript-console, 0 = 0ff
-var debug = 0;
+var debug = 1;
 
 // Set messagecounters for different badge-colors
 var warnlevel = 200;

@@ -592,6 +592,7 @@ function getLastHeard(document, event) {
 								} else {
 									logIt("Problem replacing watchdog! Indices: " + rowIndexes);
 								}
+								var row = t_lh.row(rowIndexes[0]).node();
 								if (txing) {
 									$(row).addClass('red');
 								} else {
