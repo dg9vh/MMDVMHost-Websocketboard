@@ -197,20 +197,12 @@ function getTarget(logline) {
 				}
 			}
 		} else {
-			//if (getMode(logline).startsWith("DMR")) {
-				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '</a>';
-				return link;
-			/*} else {
-				link = '<a href="' + bmlink + linkTarget + '" target="_new">' + target + '</a>';
-				return link;
-			}*/
+			link = '<a href="' + bmlink + linkTarget + '" target="_new">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '</a>';
+			return '<div class=\"tooltip2\">' + link + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
 		}
 	} else {
-		//if (getMode(logline).startsWith("DMR")) {
-			return resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target);
-		/*} else {
-			return target;
-		}*/
+		return '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
+		//resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target);
 	}
 }	
 
