@@ -202,7 +202,6 @@ function getTarget(logline) {
 		}
 	} else {
 		return '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
-		//resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target);
 	}
 }	
 
@@ -223,12 +222,21 @@ function getDuration(logline) {
 		return "";
 	}
 }
+// 00000000001111111111222222222233333333334444444444455555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
+// 0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+// M: 2021-02-22 20:57:50.794 YSF, received RF end of transmission from DG9VH      to DG-ID 127, 0.4 seconds, RSSI: -47/-47/-47 dBm
+// M: 2021-02-22 21:16:09.120 YSF, received network end of transmission from DG2MAS     to DG-ID 41, 35.9 seconds, 0% packet loss, BER: 0.0%
+// M: 2021-02-22 20:57:11.415 YSF, received RF end of transmission from DG9VH      to DG-ID 0, 1.0 seconds, BER: 0.6%, RSSI: -47/-47/-47 dBm
 
 function getLoss(logline) {
-	if(logline.lastIndexOf("seconds") > 0) {
-		val = logline.substring(logline.lastIndexOf("seconds") + 9, logline.indexOf("%") + 1);
-		if (val.indexOf("BER") == -1) {
-			return val;
+	if (getSource(logline) == "Net") {
+		if(logline.lastIndexOf("seconds") > 0) {
+			val = logline.substring(logline.lastIndexOf("seconds") + 9, logline.indexOf("%") + 1);
+			if (val.indexOf("BER") == -1) {
+				return val;
+			} else {
+				return "";
+			}
 		} else {
 			return "";
 		}
@@ -257,13 +265,17 @@ function getRSSI(logline) {
 }
 
 function getBER(logline) {
-	if(logline.lastIndexOf("BER") > 0) {
-		if(logline.lastIndexOf("RSSI:") > 0) {
-			retval = logline.substring(logline.lastIndexOf("BER") + 4, logline.lastIndexOf("RSSI:"));
-			retval += " " + getRSSI(logline);
-			return retval;
+	if (getSource(logline) == "RF") {
+		if(logline.lastIndexOf("BER") > 0) {
+			if(logline.lastIndexOf("RSSI:") > 0) {
+				retval = logline.substring(logline.lastIndexOf("BER") + 4, logline.lastIndexOf("RSSI:"));
+				retval += " " + getRSSI(logline);
+				return retval;
+			} else {
+				return logline.substring(logline.lastIndexOf("BER") + 4);
+			}
 		} else {
-			return logline.substring(logline.lastIndexOf("BER") + 4);
+			return "---%, " + getRSSI(logline);
 		}
 	} else {
 		return "";
@@ -306,7 +318,6 @@ function getMessage(logline) {
 	}
 	
 	if (1062 == parseInt(getRIC(logline)) || 1063 == parseInt(getRIC(logline))) {
-		//message = '<a href="#" class="tooltip-test" title="' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '">' + message + '</a>';
 		message = '<div class=\"tooltip2\">' + message + '<span class=\"tooltiptext\">Decoded Message:<br>' + JSON.stringify(parseMETAR(message)).replace(/\"/g, '').replace(/,/g, ',\n') + '</span></div>';
 	}
 	return message;
@@ -515,11 +526,6 @@ function getLastHeard(document, event) {
 		lines.forEach(function(line, index, array) {
 			logIt("LogLine: " + line);
 			if (!inDashboardBlacklist(line)) {
-				/*if (line.indexOf("description:") > 0 ) {
-					modem = line.substring(line.indexOf("description:") + 12);
-					document.getElementById("modem").innerHTML = modem;
-				}*/
-				
 				txing = false;
 				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0)) {
 					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("received RF header") > 0) {
