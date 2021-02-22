@@ -310,6 +310,7 @@
 					}
 					
 					// Calculating BER
+					$(row).find('td:eq(7)').css('color', 'black');
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) <= 0.5){
 						$(row).find('td:eq(7)').css('color', 'black');
 					}
