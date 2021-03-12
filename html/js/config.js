@@ -1,3 +1,6 @@
+// config structure version, please change to value in github-file after update and adding new values
+var config_struc_ver = 20210312.1;
+
 // 1 = show link to QRZ.com, 0 = off
 var qrz = 1;
 

@@ -1,3 +1,4 @@
+var act_config_struc_ver = 20210312.1;
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
@@ -25,6 +26,13 @@ setInterval(getCurrentTXing, 1000);
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
 		console.log(JSON.stringify(message));
+	}
+}
+
+function checkConfigStructure() {
+	if (typeof config_struc_ver === "undefined" || config_struc_ver < act_config_struc_ver) {
+		//alert("Old!");
+		$('#configstructmodal').modal('show');
 	}
 }
 

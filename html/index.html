@@ -32,6 +32,29 @@
 		<title>DG9VH - MMDVM-Dashboard by DG9VH</title>
 	</head>
 	<body>
+		<!-- Config structure modal -->
+		<div id="configstructmodal" class="modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Update your config.js please!</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>This text is shown to you, because you may use an old config.js-structure. Please open your config.js and compare it with the example-one in github-repository, add missing or change configuration options that has been renamed and add following line (or update existing one to this) into the config.js-file:</p>
+						<p>
+						var config_struc_ver = <script  type="text/javascript">document.write(act_config_struc_ver);</script>
+						
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- Navigation -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
 			<div class="container-fluid">
@@ -416,6 +439,8 @@
 				};
 				t_dapnet.order( [ 0, 'desc' ] ).draw();
 			}
+			
+			checkConfigStructure();
 		</script>
 	</body>
 </html>
