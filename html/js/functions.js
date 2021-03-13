@@ -877,7 +877,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$.ajax({
 		type: "GET",
-		url: window.location.protocol + 'data/TG_List.csv',
+		url: window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1) + 'data/TG_List.csv',
 		dataType: "text",
 		success: function(data) {processData(data);}
 	});
