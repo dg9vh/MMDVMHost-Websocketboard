@@ -31,7 +31,6 @@ function logIt(message) {
 
 function checkConfigStructure() {
 	if (typeof config_struc_ver === "undefined" || config_struc_ver < act_config_struc_ver) {
-		//alert("Old!");
 		$('#configstructmodal').modal('show');
 	}
 }
@@ -872,15 +871,13 @@ $(document).ready(function() {
 			activateDefaultTab(tabname);
 			defaultSet = true;
 		}
-		if (!defaultSet)
-			activateDefaultTab("lastheard");
 	}
 });
 
 $(document).ready(function() {
 	$.ajax({
 		type: "GET",
-		url: window.location.protocol + '/data/TG_List.csv',
+		url: window.location.protocol + 'data/TG_List.csv',
 		dataType: "text",
 		success: function(data) {processData(data);}
 	});
