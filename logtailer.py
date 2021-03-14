@@ -15,6 +15,7 @@ from urllib.parse import urlparse, parse_qs
 from ansi2html import Ansi2HTMLConverter
 from os import popen
 import psutil
+import ssl
 import functools
 from http import HTTPStatus
 import subprocess
@@ -332,10 +333,17 @@ def log_close(websocket, path, exception=None):
 
 
 def websocketserver():
-    start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'])
+    if (config['DEFAULT']['Ssl'] == "True"):
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        cert_pem = config['DEFAULT']['SslCert']
+        key_pem = config['DEFAULT']['SslKey']
+
+        ssl_context.load_cert_chain(cert_pem, key_pem)
+        start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'], ssl=ssl_context)
+    else:
+        start_server = websockets.serve(view_log, config['DEFAULT']['Host'], config['DEFAULT']['Port'])
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
-
 
 def main():
     dmr_id_lookup = config['MMDVMHost']['DMR_ID_Lookup']
