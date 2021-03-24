@@ -290,18 +290,21 @@ function getBER(logline) {
 }
 
 function getAddToQSO(logline) {
-	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
-	name = "";
-	if (callsign.indexOf("$") > 0) {
-		name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
-		if (name == "$")
-			name = "";
-		callsign = callsign.substring(0, callsign.indexOf("$"));
-	}
-	if (name == "" ) {
-		retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
-	} else {
-		retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + ' - ' + name + '" onclick="copyToQSO(\'' + callsign + ' - ' + name + '\')">Copy</button></div>';
+	retval = "";
+	if (qso > 0) {
+		callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
+		name = "";
+		if (callsign.indexOf("$") > 0) {
+			name = callsign.substring(callsign.indexOf("$") + 1, callsign.lastIndexOf("$"));
+			if (name == "$")
+				name = "";
+			callsign = callsign.substring(0, callsign.indexOf("$"));
+		}
+		if (name == "" ) {
+			retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + '" onclick="copyToQSO(\'' + callsign + '\')">Copy</button></div>';
+		} else {
+			retval = '<div class="bd-clipboard"><button type="button" class="btn-cpQSO" title="Copy to QSO" id="' + callsign + ' - ' + name + '" onclick="copyToQSO(\'' + callsign + ' - ' + name + '\')">Copy</button></div>';
+		}
 	}
 	return retval;
 }
