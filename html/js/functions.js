@@ -160,7 +160,11 @@ function resolveTarget(mode, timeslot, target) {
 			break;
 	}
 	if (retval.length > 0) {
-		return retval[0][3];
+		if (retval[0][4] != "") {
+			return '<a target="_new" href="'+retval[0][4]+'">'+retval[0][3]+'</a>';
+		} else {
+			return retval[0][3];
+		}
 	} else {
 		return target;
 	}
@@ -890,7 +894,7 @@ function processData(data) {
 	var allRows = data.split(/\r?\n|\r/);
 	for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
 		var rowCells = allRows[singleRow].split(',');
-		talkgroups.push([rowCells[0], rowCells[1], rowCells[2], rowCells[3]]);
+		talkgroups.push([rowCells[0], rowCells[1], rowCells[2], rowCells[3], rowCells[4]]);
 	}
 	logIt("Parsed TGs: " + talkgroups);
 }
