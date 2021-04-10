@@ -81,10 +81,14 @@ For updating the DMRIds.dat you can use the script you find in scripts-folder.
 ### Configuration of Talkgroup-Textes in "Target"-column
 You will find a file in /html/data called "TG_List.csv" that is a comma-separated file of following format:
 ```
-TS,TG,LABEL
-1,263,DL Multimode BM
-2,8021,Pegasus DMR-DL
-2,2625,RLP/SL BM
+MODE,TS,TG,LABEL,URL
+DMR,1,263,DL Multimode BM,
+DMR,2,8021,Pegasus DMR-DL,
+DMR,2,2625,RLP/SL BM,
+YSF,0,1,Local Parrot,
+YSF,0,2,DEV Reflector,
+YSF,0,10,YSF2DMR TG26250,
+YSF,0,40,DL Multimode 263,https://c4fm.ysfreflector.de/Germany/
 ```
 First row leave untouched for orientation. The other lines contains on first column the DMR-timeslot the TG is used, second column contains the talkgroup-number and third column contains the label you want to be shown in the target-column of the dashboard.
 
