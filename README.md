@@ -1,7 +1,7 @@
 # MMDVMHost-Websocketboard
 
 ## Introduction
-This is a very first development version of my new MMDVMDash using websockets-technology to get rid of high load on Raspberry Pi and others and keep those temperature down.
+This is a very first development version of my new MMDVMDashboard using websockets-technology to get rid of high load on Raspberry Pi and others and keep those temperature down.
 
 Also this should improve user experience.
 
@@ -39,47 +39,47 @@ Actually known:
 * pyserial: `sudo apt-get install python3-serial`
 
 ### Recommendations
-* take care to set Loglevel for FileLevel = 2 in your MMDVM.ini
-* also set debug = 0 on each section to avoid irritating output on the Dashboard
-* Python3.7 at least must be instaled
+* Take care to set Loglevel for `FileLevel = 2` in your MMDVM.ini
+* Also set `debug = 0` on each section to avoid irritating output on the Dashboard
+* At least Python3.7 should be installed
 
 ### Installation steps
-* first of all (if not already done by installation of MMDVMHost): create a syetemuser with `sudo adduser --system --no-create-home --group mmdvm`
-* also add the new user to the group "dialout" with `usermod -a -G dialout mmdvm`
-* add following line to /etc/sudoers with `sudo visudo` for getting the logtailer access to MMDVMHost: `www-data ALL=(ALL) NOPASSWD: /usr/local/bin/MMDVMHost`
-* clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
-* create directory with `sudo mkdir /opt/MMDVMDash`
-* copy all files from repository into this folder
-* change ownership to user mmdvm for example with `sudo chown -R mmdvm:mmdvm /opt/MMDVMDash`
-* modify *logtailer.ini* to fit your needs
-* modify */html/js/config.js* to fit your needs, here you can switch on/off tabs showing or enable debug for getting some output in javascript console. You should take a look into this file - here are different options you can configure.
-* copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
-* modify both scripts to fit your needs
-* enable services with following commmands, this results in starting both automatically after reboot:
+* First of all (if not already done by installation of MMDVMHost): create a syetemuser with `sudo adduser --system --no-create-home --group mmdvm`
+* Also add the new user to the group "dialout" with `usermod -a -G dialout mmdvm`
+* Add following line to /etc/sudoers with `sudo visudo` for getting the logtailer access to MMDVMHost: `www-data ALL=(ALL) NOPASSWD: /usr/local/bin/MMDVMHost`
+* Clone this repository to your home-directory with `git clone --recurse-submodules -j8 https://github.com/dg9vh/MMDVMHost-Websocketboard` to clone the repository with it's submodules
+* Create directory with `sudo mkdir /opt/MMDVMDash`
+* Copy all files from repository into this folder
+* Change ownership to user mmdvm for example with `sudo chown -R mmdvm:mmdvm /opt/MMDVMDash`
+* Modify *logtailer.ini* to fit your needs
+* Modify */html/js/config.js* to fit your needs, here you can switch on/off tabs showing or enable debug for getting some output in javascript console. You should take a look into this file - here are different options you can configure.
+* Copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
+* Modify both scripts to fit your needs
+* Enable services with following commmands, this results in starting both automatically after reboot:
   * `sudo systemctl enable http.server.service`
   * `sudo systemctl enable logtailer.service`
-* start services with following commmands:
+* Start services with following commmands:
   * `sudo systemctl start http.server.service`
   * `sudo systemctl start logtailer.service`
 
-Finally you should be able to get the new Dashboard calling the hostname of your hotspot and port 8000 (default) in your broser
+Finally you should be able to get the new Dashboard by calling the hostname of your Hotspot/Repeater and port 8000 (default) in your browser.
 
-### Troubleshoting
+### Troubleshooting
 If you have any trouble running the software most things depend on the logtailer-component. So it is a good idea to try starting the software on the console with
-`python3 ./logtailer.py` to see the output of the program. A common error are missing python-libraries you should install with the commands mentioned above.
+`python3 ./logtailer.py` to see the output of the program. A common error is missing python-libraries you should install with the commands mentioned above.
 
-If you found any further missing library let me know! Just open an issue!
+If you find any further missing library let me know! Just open an issue!
 
 If there are problems with paths for logfiles you also could get some impressions with the output of the program.
 
 ### If using DMRHost by BrandMeister-Team
-If you are using the DMRHost as replacement for MMDVMHost you should enable DMR-ID-Lookup within logtailer.ini by setting the corresponding option = 1
-Also take care to configure the filepath to the correct location of your DMRIds.dat.
+If you are using the DMRHost as replacement for MMDVMHost you should enable DMR-ID-Lookup within *logtailer.ini* by setting the corresponding option = 1
+Also take care to configure the filepath to the correct location of your *DMRIds.dat*.
 
-For updating the DMRIds.dat you can use the script you find in scripts-folder.
+To update the *DMRIds.dat* file, you can use the script found in scripts-folder.
 
 ### Configuration of Talkgroup-Textes in "Target"-column
-You will find a file in /html/data called "TG_List.csv" that is a comma-separated file of following format:
+You will find a file in */html/data* called "TG_List.csv" that is a comma-separated file of following format:
 ```
 MODE,TS,TG,LABEL,URL
 DMR,1,263,DL Multimode BM,
@@ -95,14 +95,14 @@ First row leave untouched for orientation. The other lines contains on first col
 Please edit this file to your needs. It may change on developer-side from time by time so when updating keep a copy of your personal list to modify/edit it.
 
 If you do not want to have this Talkgroup-textes in your dashboard, simply remove all but the first line in this file.
-## Best Practise Installation
+## Installation Best Practices
 For getting the best user experience it is recommended to configure your MMDVMHost and other G4KLX-software with the following parameter:
 
 `FileRotate=0`
 
 This results in having only one logfile for each program and having it rotated by your linux-system with logrotate if configured.
 
-You should also configure your logtailer.ini with
+You should also configure your *logtailer.ini* with
 
 `FileRotate=False`
 
