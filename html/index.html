@@ -29,6 +29,7 @@
 		<script type="text/javascript" src="js/functions.js"></script>
 		<link rel="stylesheet" href="css/styles.css">
 		<link rel="stylesheet" href="css/tooltip.css">
+		<link href="open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
 		<title>DG9VH - MMDVM-Dashboard by DG9VH</title>
 	</head>
 	<body>
@@ -86,6 +87,9 @@
 			</li>
 			<li class="nav-item" name="sysinfo">
 				<a class="nav-link" id="sysinfo-tab" data-toggle="tab" href="#sysinfo" role="tab" aria-controls="sysinfo" aria-selected="false">System Info</a>
+			</li>
+			<li class="nav-item" name="services">
+				<a class="nav-link" id="services-tab" data-toggle="tab" href="#services" role="tab" aria-controls="services" aria-selected="false">Services Monitor</a>
 			</li>
 			<li class="nav-item" name="about">
 				<a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
@@ -294,6 +298,15 @@
 					</div>
 				</div>
 			</div>
+			<div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+				<div class="panel panel-default">
+					<!-- Standard-Panel-Inhalt -->
+					<div class="panel-heading">Services Monitor<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span></div>
+					<div class="panel-body">
+					<span id="services_monitor"><ul class="services_monitor"></span>
+					</div>
+				</div>
+			</div>
 			<div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
 				<div class="panel panel-default">
 					<!-- Standard-Panel-Inhalt -->
@@ -444,6 +457,13 @@
 					getDapnetMessages(document, event);
 				};
 				t_dapnet.order( [ 0, 'desc' ] ).draw();
+			}
+			
+			if (services > 0) {
+				var ws3 = new WebSocket("ws://" + window.location.hostname + ":5678/SERVICES");
+				ws3.onmessage = function (event) {
+					getServicesStatus(document, event);
+				};
 			}
 			
 			checkConfigStructure();

@@ -1,4 +1,4 @@
-var act_config_struc_ver = 20210312.1;
+var act_config_struc_ver = 20210314.1;
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
@@ -20,6 +20,8 @@ qso = typeof(qso) == 'undefined' ? 1 : qso;
 dapnet = typeof(dapnet) == 'undefined' ? 1 : dapnet;
 sysinfo = typeof(sysinfo) == 'undefined' ? 1 : sysinfo;
 about = typeof(about) == 'undefined' ? 1 : about;
+
+var array_services = [];
 
 setInterval(getCurrentTXing, 1000);
 
@@ -853,6 +855,61 @@ function getSysInfo(document, event) {
 			document.getElementById("disk_free").innerHTML = parseFloat(data.substring(data.indexOf("disk_free:") + 10, data.indexOf(" "))).toFixed(3);
 			data = data.substring(data.indexOf(" ") + 1);
 			document.getElementById("disk_percent_used").innerHTML = data.substring(data.indexOf("disk_percent_used:") + 18);
+		}
+	});
+}
+
+function getServiceName(event) {
+	return event.data.substring(17, event.data.lastIndexOf(":"));
+}
+
+
+function getServiceState(event) {
+	return event.data.substr(event.data.lastIndexOf(":") + 1);
+}
+
+function addToServices(servicename, servicestate) {
+	var newService = new Array();
+	newService[0] = servicename;
+	newService[1] = servicestate;
+	array_services.push(newService);
+}
+
+function insertOrUpdateServiceState(servicename, servicestate) {
+	updated = false;
+	for (i = 0; i < array_services.length; ++i){
+		actual_service = array_services[i];
+		if (actual_service[0] == servicename) {
+			var newService = new Array();
+			newService[0] = servicename;
+			newService[1] = servicestate;
+			array_services[i] = newService;
+			updated = true;
+		}
+	}
+	if (updated == false) {
+		addToServices(servicename, servicestate);
+	}
+}
+
+function getServicesStatus(document, event) {
+	$(document).ready(function() {
+		if (event.data.startsWith("SERVICESMONITOR")) {
+			var servicename = getServiceName(event);
+			var servicestate = getServiceState(event);
+			insertOrUpdateServiceState(servicename, servicestate);
+			
+			document.getElementById("services_monitor").innerHTML = '<ul id="services_monitor_list">';
+			//document.getElementById("services_monitor").innerHTML = '<ul id="services_monitor_list" style="list-style-type: none;">';
+			
+			array_services.forEach(function(actual_service){
+				if (actual_service[1] == "running") {
+					document.getElementById("services_monitor_list").innerHTML += '<li title="' + actual_service[0] + ' is running"><span class="oi oi-media-play"></span> ' + actual_service[0] + '</li>';
+				} else {
+					document.getElementById("services_monitor_list").innerHTML += '<li title="' + actual_service[0] + ' is stopped"><span class="oi oi-media-stop"></span> ' + actual_service[0] + '</li>';
+				}
+			});
+			document.getElementById("services_monitor").innerHTML += "</ul>";
 		}
 	});
 }

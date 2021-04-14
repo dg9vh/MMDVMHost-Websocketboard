@@ -260,7 +260,8 @@ async def view_log(websocket, path):
                             await websocket.send(line)
                     else:
                         await asyncio.sleep(0.2)
-        elif path == "/SYSINFO":
+        
+        if path == "/SYSINFO":
             mmdvmhost_version = str(subprocess.Popen(config['MMDVMHost']['MMDVM_bin'] + " -v", shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8"))
             mmdvmhost_ctime = time.ctime(os.path.getmtime(config['MMDVMHost']['MMDVM_bin']))
             mmdvmhost_buildtime = datetime.datetime.strptime(mmdvmhost_ctime, "%a %b %d %H:%M:%S %Y")
@@ -304,6 +305,19 @@ async def view_log(websocket, path):
                 await websocket.send("SYSINFO: cputemp:" + cpu_temp + " cpufrg:" + cpufrq + " cpuusage:" + cpu_usage + " cpu_load1:" + cpu_load1 + " cpu_load5:" + cpu_load5 + " cpu_load15:" + cpu_load15 + " ram_total:" + ram_total + " ram_used:" + ram_used + " ram_free:" + ram_free + " ram_percent_used:" + ram_percent_used + " disk_total:" + disk_total + " disk_used:" + disk_used + " disk_free:" + disk_free + " disk_percent_used:" + disk_percent_used)
                 await asyncio.sleep(10)
 
+        if path == "/SERVICES":
+            services_items = [x for x in config.items('ServiceMonitoring') if x[0] not in config.defaults()]
+            while True:
+                for key, value in services_items:
+                    logging.info('key: ' + key + " = " + value)
+                    if checkIfProcessRunning(value):
+                        logging.info('process ' + value + " is running")
+                        await websocket.send("SERVICESMONITOR: " + value + ":running")
+                    else:
+                        logging.info('process ' + value + " is stopped")
+                        await websocket.send("SERVICESMONITOR: " + value + ":stopped")
+                await asyncio.sleep(30)
+
     except ValueError as e:
         try:
             await websocket.send('Logtailer-Errormessage: ValueError: {}'.format(e))
@@ -323,6 +337,21 @@ async def view_log(websocket, path):
 
     else:
         log_close(websocket, path)
+
+
+def checkIfProcessRunning(processName):
+    '''
+    Check if there is any running process that contains the given name processName.
+    '''
+    #Iterate over the all the running process
+    for proc in psutil.process_iter():
+        try:
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False;
 
 
 def log_close(websocket, path, exception=None):

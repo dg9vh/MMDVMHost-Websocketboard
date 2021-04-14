@@ -30,3 +30,6 @@ td.dt-nowrap { white-space: nowrap }
 .red {
   background-color: Coral !important;
 }
+
+
+#services_monitor_list {list-style-type: none;}

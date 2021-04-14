@@ -6,8 +6,8 @@ YSF,0,1,Local Parrot,
 YSF,0,2,DEV Reflector,
 YSF,0,10,YSF2DMR TG26250,
 YSF,0,40,DL Multimode 263,https://c4fm.ysfreflector.de/Germany/
-YSF,0,41,DL-RAMSES,
-YSF,0,42,DL-RAMSES-II,
+YSF,0,41,DL-RAMSES,http://161.97.140.131:8000/RAMSES.html
+YSF,0,42,DL-RAMSES-II,http://161.97.140.131:8000/RAMSES-II.html
 YSF,0,43,DL-RAMSES-III,
 YSF,0,44,DL-PEGASUS,
 YSF,0,45,DL-SAAR,https://c4fm.ysfreflector.de/DL-Saar/

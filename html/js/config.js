@@ -1,5 +1,5 @@
 // config structure version, please change to value in github-file after update and adding new values
-var config_struc_ver = 20210312.1;
+var config_struc_ver = 20210414.1;
 
 // 1 = show link to QRZ.com, 0 = off
 var qrz = 1;
@@ -20,6 +20,7 @@ var allheard = 1;
 var qso = 1;
 var dapnet = 1;
 var sysinfo = 1;
+var services = 1;
 var about = 1;
 
 // Set displayed timezone and timestamp to timezone of browser if 1, else use UTC for displaying
