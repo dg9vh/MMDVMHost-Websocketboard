@@ -1,4 +1,4 @@
-var act_config_struc_ver = 20210314.1;
+var act_config_struc_ver = 20210321.1;
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
@@ -24,6 +24,15 @@ about = typeof(about) == 'undefined' ? 1 : about;
 var array_services = [];
 
 setInterval(getCurrentTXing, 1000);
+
+var element = document.createElement("link");
+element.setAttribute("rel", "stylesheet");
+element.setAttribute("type", "text/css");
+if (useDarkTheme)
+	element.setAttribute("href", "css/styles-dark.css");
+else
+	element.setAttribute("href", "css/styles-bright.css");
+document.getElementsByTagName("head")[0].appendChild(element);
 
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {

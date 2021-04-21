@@ -1,5 +1,5 @@
 // config structure version, please change to value in github-file after update and adding new values
-var config_struc_ver = 20210414.1;
+var config_struc_ver = 20210421.1;
 
 // 1 = show link to QRZ.com, 0 = off
 var qrz = 1;
@@ -40,3 +40,6 @@ var qrz_blacklist = [
 var dashboard_blacklist = [
 "MY0CALL",
 ]
+
+// 1 = enable dark display theme, 0 = use bright theme
+var useDarkTheme = 1;

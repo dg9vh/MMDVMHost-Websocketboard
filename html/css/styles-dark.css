@@ -1,0 +1,66 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+	position: relative;
+	min-height: 100%;
+}
+body {
+	margin-bottom: 60px; /* Margin bottom by footer height */
+	background: #191919;
+	color: #dddddd;
+}
+
+label {
+    color: #dddddd;
+}
+
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+    color: #dddddd;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 60px; /* Set the fixed height of the footer here */
+	line-height: 60px; /* Vertically center the text there */
+	background-color: #000000;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+a:link, a:visited {
+	color: #dddddd;
+}
+
+a:hover {
+	color: #ababab;
+}
+
+table.dataTable {
+	color: #adb5bd;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+	background-color: #595959;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #797979;
+}
+
+.container {
+	width: auto;
+	padding: 0 15px;
+}
+
+td.dt-nowrap { white-space: nowrap }
+
+.red {
+  background-color: #7d0f0f !important;
+}
+
+
+#services_monitor_list {list-style-type: none;}
