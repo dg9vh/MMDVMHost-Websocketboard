@@ -25,14 +25,52 @@ var array_services = [];
 
 setInterval(getCurrentTXing, 1000);
 
+var usedTheme = getCookie("Theme");
+
+if (usedTheme == "") {
+	if (useDarkTheme)
+		usedTheme = "dark";
+	else
+		usedTheme = "bright";
+	setCookie("Theme",usedTheme, 30);
+}
+
 var element = document.createElement("link");
 element.setAttribute("rel", "stylesheet");
 element.setAttribute("type", "text/css");
-if (useDarkTheme)
-	element.setAttribute("href", "css/styles-dark.css");
-else
-	element.setAttribute("href", "css/styles-bright.css");
+element.setAttribute("href", "css/styles-" + usedTheme + ".css");
 document.getElementsByTagName("head")[0].appendChild(element);
+
+function setCookie(cname, cvalue, exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+	var expires = "expires="+d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+	var name = cname + "=";
+	var ca = document.cookie.split(';');
+	for(var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+function switchTheme() {
+	if (usedTheme == "dark") {
+		setCookie("Theme", "bright", 30);
+	} else {
+		setCookie("Theme", "dark", 30);
+	}
+	document.location.reload();
+}
 
 function logIt(message) {
 	if (debug == 1 || message.startsWith("Logtailer-Errormessage:")) {
