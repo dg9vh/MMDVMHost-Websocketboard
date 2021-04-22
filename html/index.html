@@ -27,7 +27,6 @@
 		<script type="text/javascript" src="js/config.js"></script>
 		<script type="text/javascript" src="metar.js/metar.js"></script>
 		<script type="text/javascript" src="js/functions.js"></script>
-		<!--<link rel="stylesheet" href="css/styles.css">-->
 		<link rel="stylesheet" href="css/tooltip.css">
 		<link href="open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
 		<title>DG9VH - MMDVM-Dashboard by DG9VH</title>
@@ -342,7 +341,7 @@
 				'rowCallback': function(row, data, index){
 					// Calculating LOSS
 					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) <= 5){
-						$(row).find('td:eq(6)').css('color', 'black');
+						$(row).find('td:eq(6)').css('color', 'none');
 					}
 					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) > 5){
 						$(row).find('td:eq(6)').css('color', 'orange');
@@ -354,7 +353,7 @@
 					// Calculating BER
 					$(row).find('td:eq(7)').css('color', 'black');
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) <= 0.5){
-						$(row).find('td:eq(7)').css('color', 'black');
+						$(row).find('td:eq(7)').css('color', 'none');
 					}
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) > 0.5){
 						$(row).find('td:eq(7)').css('color', 'orange');
