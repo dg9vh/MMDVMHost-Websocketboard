@@ -84,6 +84,16 @@ function checkConfigStructure() {
 	}
 }
 
+Date.prototype.stdTimezoneOffset = function () {
+	var jan = new Date(this.getFullYear(), 0, 1);
+	var jul = new Date(this.getFullYear(), 6, 1);
+	return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+
+Date.prototype.isDstObserved = function () {
+	return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
+
 function getTimezone() {
 	if (useClientTimezone) {
 		var d = new Date();
@@ -104,6 +114,8 @@ function getTimezone() {
 			timezone = timezonenames[offset];
 		}
 
+		if (d.isDstObserved() && timezone == "EET")
+			timezone = "CEST";
 		return timezone;
 	} else {
 		return "UTC";
