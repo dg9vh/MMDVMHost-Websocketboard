@@ -285,7 +285,11 @@ function getSource(logline) {
 			val = "Net";
 		return val;
 	} else {
-		return "RF";
+		if (logline.indexOf("network watchdog has expired" > 0 )){
+			return "Net";
+		} else {
+			return "RF";
+		}
 	}
 }
 
