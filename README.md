@@ -90,7 +90,7 @@ YSF,0,2,DEV Reflector,
 YSF,0,10,YSF2DMR TG26250,
 YSF,0,40,DL Multimode 263,https://c4fm.ysfreflector.de/Germany/
 ```
-First row leave untouched for orientation. The other lines contains on first column the DMR-timeslot the TG is used, second column contains the talkgroup-number and third column contains the label you want to be shown in the target-column of the dashboard.
+First row leave untouched for orientation. The other lines contains on first column the DMR-timeslot the TG is used, second column contains the talkgroup-number and third column contains the label you want to be shown in the target-column of the dashboard. The last column can contain an URL to any dashboard or homepage you like to point to. If no URL is given, on DMR-Mode the corresponding Last-Heard-List for the talkgroup in BrandMeister-Network is linked.
 
 Please edit this file to your needs. It may change on developer-side from time by time so when updating keep a copy of your personal list to modify/edit it.
 
