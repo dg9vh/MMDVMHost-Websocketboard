@@ -459,6 +459,7 @@ function copyToQSO(callsign) {
 }
 
 function getNormalizedCallsign(callsign) {
+	callsign = callsign.trim();
 	retval = "";
 	for (i = 0; i < callsign.length; ++i) {
 		if (! /^[a-zA-Z0-9]+$/.test(callsign[i])) {
@@ -467,6 +468,7 @@ function getNormalizedCallsign(callsign) {
 			retval += callsign[i];
 		}
 	}
+	return retval;
 }
 
 function getCallsign(logline) {
