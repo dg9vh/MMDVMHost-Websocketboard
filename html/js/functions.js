@@ -458,6 +458,17 @@ function copyToQSO(callsign) {
 	
 }
 
+function getNormalizedCallsign(callsign) {
+	retval = "";
+	for (i = 0; i < callsign.length; ++i) {
+		if (! /^[a-zA-Z0-9]+$/.test(callsign[i])) {
+			return retval;
+		} else {
+			retval += callsign[i];
+		}
+	}
+}
+
 function getCallsign(logline) {
 	callsign = logline.substring(logline.indexOf("from") + 5, logline.indexOf("to")).trim();
 	name = "";
@@ -469,9 +480,9 @@ function getCallsign(logline) {
 	}
 	if (qrz == 1 && isNaN(callsign) && !qrz_blacklist.includes(callsign)) {
 		if (name != "") {
-			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
+			return '<div class=\"tooltip2\"><a target="_new" href="https://qrz.com/db/' + getNormalizedCallsign(callsign) + '">' + callsign + '</a><span class=\"tooltip2text\">Name:<br>' + name + '</span></div>';
 		} else {
-			return '<a target="_new" href="https://qrz.com/db/' + callsign + '">' + callsign + '</a>';
+			return '<a target="_new" href="https://qrz.com/db/' + getNormalizedCallsign(callsign) + '">' + callsign + '</a>';
 		}
 	} else {
 		if (name != "") {
