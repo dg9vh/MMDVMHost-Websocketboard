@@ -613,7 +613,7 @@ function getLastHeard(document, event) {
 							ts2timestamp = getRawTimestamp(line);
 						}
 					}
-					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0) {
+					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0 || line.indexOf("voice transmission lost") > 0 ) {
 						if (getMode(line) == "DMR Slot 1" ) {
 							ts1TXing = null;
 						} else {
