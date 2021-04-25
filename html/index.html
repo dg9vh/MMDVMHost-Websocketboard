@@ -377,6 +377,18 @@
 				"columnDefs": [
 						{ className: "dt-nowrap", "targets": [ 0, 1, 2, 3, 6 ] }
 					],
+				'rowCallback': function(row, data, index){
+					// Calculating BER
+					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) <= 0.5){
+						$(row).find('td:eq(6)').css('color', 'none');
+					}
+					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) > 0.5){
+						$(row).find('td:eq(6)').css('color', 'orange');
+					}
+					if(parseFloat(data[6].substring(0, data[6].indexOf("%"))) > 2){
+						$(row).find('td:eq(6)').css('color', 'red');
+					}
+				},
 				"autoWidth": false
 			} );
 			
