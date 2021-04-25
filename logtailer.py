@@ -232,7 +232,7 @@ async def view_log(websocket, path):
                         content = conv.convert(content, full=False)
                         lines = content.split("\n")
                         for line in lines:
-                            if line.find("received") > 0 or line.find("network watchdog") > 0:
+                            if line.find("received") > 0 or line.find("network watchdog") > 0 or line.find("transmission lost") > 0:
                                 if line.find("from ") > 0 and line.find("to ") > 0:
                                     source = line[line.index("from ") + 5:line.index("to ")].strip()
                                     if source in dmrids:
