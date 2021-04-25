@@ -351,7 +351,7 @@
 					}
 					
 					// Calculating BER
-					$(row).find('td:eq(7)').css('color', 'black');
+					$(row).find('td:eq(7)').css('color', 'none');
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) <= 0.5){
 						$(row).find('td:eq(7)').css('color', 'none');
 					}
@@ -388,7 +388,7 @@
 				'rowCallback': function(row, data, index){
 					// Calculating LOSS
 					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) <= 5){
-						$(row).find('td:eq(6)').css('color', 'black');
+						$(row).find('td:eq(6)').css('color', 'none');
 					}
 					if(parseInt(data[6].substring(0, data[6].indexOf("%"))) > 5){
 						$(row).find('td:eq(6)').css('color', 'orange');
@@ -399,7 +399,7 @@
 					
 					// Calculating BER
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) <= 0.5){
-						$(row).find('td:eq(7)').css('color', 'black');
+						$(row).find('td:eq(7)').css('color', 'none');
 					}
 					if(parseFloat(data[7].substring(0, data[7].indexOf("%"))) > 0.5){
 						$(row).find('td:eq(7)').css('color', 'orange');
