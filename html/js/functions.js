@@ -273,9 +273,17 @@ function getTarget(logline) {
 			return '<div class=\"tooltip2\">' + link + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
 		}
 	} else {
-		return '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
+		retval =  '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
+		if (getMode(logline) == "YSF" && logline.indexOf(" at ") > 0) {
+			via = logline.substr(logline.indexOf(" at "));
+			if (via.indexOf("$") > 0) {
+				via = via.substr(0, via.indexOf("$"));
+			}
+			retval += " @ " + via;
+		}
+		return retval;
 	}
-}	
+}
 
 function getSource(logline) {
 	if (logline.indexOf("received") > 0) {
@@ -633,16 +641,9 @@ function getLastHeard(document, event) {
 						}
 					}
 					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0 || line.indexOf("transmission lost") > 0 ) {
-						if (getMode(line) == "DMR Slot 1" ) {
-							ts1TXing = null;
-						} else {
-							ts2TXing = null;
-						}
 						txing = false;
-						
 						if (line.indexOf("network watchdog") > 0) {
 							logIt("Network Watchdog!");
-							
 							var rowIndexes = [];
 							t_lh.rows( function ( idx, data, node ) {
 								if (getMode(line) == "DMR Slot 1" ) {
@@ -689,17 +690,23 @@ function getLastHeard(document, event) {
 								}
 							}
 						}
+
 					}
 					logIt("TS1: " + ts1TXing + "|" + ts1timestamp);
 					logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
 					getCurrentTXing();
-					
 					if (line.indexOf("network watchdog") < 0 ) {
+					        ts2tmp = [];
+						if (ts2TXing != null) {
+				        	        matchstring = "";
+				                	ts2tmp = ts2TXing.split(";");
+					        }
+
 						var rowIndexes = [],
 							timestamp = getTimestamp(line),
 							mode = getMode(line),
 							callsign = getCallsign(line),
-							target = getTarget(line),
+							target = ts2tmp[2],
 							source = getSource(line),
 							duration = getDuration(line),
 							loss = getLoss(line),
@@ -709,6 +716,12 @@ function getLastHeard(document, event) {
 							duration = "TXing";
 							loss = "";
 							ber = "";
+						} else {
+							if (getMode(line) == "DMR Slot 1" ) {
+								ts1TXing = null;
+							} else {
+								ts2TXing = null;
+							}
 						}
 						if (mode == "POCSAG") {
 							callsign = "POCSAG";
@@ -725,23 +738,35 @@ function getLastHeard(document, event) {
 							}
 							return false;
 						});
-						
 						if (rowIndexes[0] == "0") {
 							t_lh.row(rowIndexes[0]).remove().draw(false);
 						}
 						if (rowIndexes[0]) {
-							
-							newData = [
-								timestamp,
-								mode,
-								callsign,
-								target,
-								source,
-								duration,
-								loss,
-								ber,
-								addToQSO
-							]
+							if (t_lh.row(rowIndexes[0]).data[0] != null) {
+								newData = [
+									timestamp,
+									mode,
+									callsign,
+									target,
+									source,
+									duration,
+									loss,
+									ber,
+									addToQSO
+								]
+							} else {
+								newData = [
+									timestamp,
+									mode,
+									callsign,
+									target,
+									source,
+									duration,
+									loss,
+									ber,
+									addToQSO
+								]
+							}
 							t_lh.row(rowIndexes[0]).data( newData ).draw(false);
 						} else {
 							t_lh.row.add( [
@@ -770,7 +795,6 @@ function getLastHeard(document, event) {
 }
 
 function getLocalHeard(document, event) {
-	
 	$(document).ready(function() {
 		lines = event.data.split("\n");
 		lines.forEach(function(line, index, array) {
