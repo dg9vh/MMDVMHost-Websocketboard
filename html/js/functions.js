@@ -275,7 +275,7 @@ function getTarget(logline) {
 	} else {
 		retval =  '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
 		if (getMode(logline) == "YSF" && logline.indexOf(" at ") > 0) {
-			via = logline.substr(logline.indexOf(" at "));
+			via = logline.substr(logline.indexOf(" at ") + 4);
 			if (via.indexOf("$") > 0) {
 				via = via.substr(0, via.indexOf("$"));
 			}
