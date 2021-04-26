@@ -279,7 +279,8 @@ async def view_log(websocket, path):
                     cpu_temp = "N/A"
                 for name, entries in temps.items():
                     for entry in entries:
-                        cpu_temp = str(entry.current)
+                        if entry.label or name == "cpu_thermal":
+                            cpu_temp = str(entry.current)
                 cpufrqs = psutil.cpu_freq()
                 cpufrq = "N/A"
                 if cpufrqs:
