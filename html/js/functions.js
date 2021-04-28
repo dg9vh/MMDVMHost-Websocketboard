@@ -195,6 +195,7 @@ function getRawTarget(logline) {
 		if (val.indexOf(",") > 0) {
 			val = val.substring(0, val.indexOf(","));
 		}
+		logIt("RawTarget: " + val);
 		return val;
 	}
 }
@@ -633,7 +634,7 @@ function getLastHeard(document, event) {
 			if (!inDashboardBlacklist(line)) {
 				txing = false;
 				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0 || line.indexOf("transmission lost") > 0)) {
-					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("received RF header") > 0) {
+					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("network header") > 0 || line.indexOf("received RF header") > 0) {
 						txing = true;
 						if (getMode(line) == "DMR Slot 1" ) {
 							ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
