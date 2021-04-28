@@ -220,7 +220,9 @@ function resolveTarget(mode, timeslot, target) {
 		default:
 			break;
 	}
-	if (retval.length > 0) {
+	//if (retval.length > 0) {
+	if (retval != null && retval != "") {
+		logIt("Retval: " + retval);
 		if (retval[0][4] != "") {
 			return '<a target="_new" href="'+retval[0][4]+'">'+retval[0][3]+'</a>';
 		} else {
@@ -274,6 +276,7 @@ function getTarget(logline) {
 		}
 	} else {
 		retval =  '<div class=\"tooltip2\">' + resolveTarget(getMode(logline), getTimeslot(getMode(logline)), target) + '<span class=\"tooltip2text\">Origin:<br>' + target + '</span></div>';
+		
 		if (getMode(logline) == "YSF" && logline.indexOf(" at ") > 0) {
 			via = logline.substr(logline.indexOf(" at ") + 4);
 			if (via.indexOf("$") > 0) {
@@ -696,22 +699,32 @@ function getLastHeard(document, event) {
 					logIt("TS2: " + ts2TXing + "|" + ts2timestamp);
 					getCurrentTXing();
 					if (line.indexOf("network watchdog") < 0 ) {
-					        ts2tmp = [];
+						ts1tmp = [];
+						ts2tmp = [];
+						if (ts1TXing != null) {
+							matchstring = "";
+							ts1tmp = ts1TXing.split(";");
+						}
 						if (ts2TXing != null) {
-				        	        matchstring = "";
-				                	ts2tmp = ts2TXing.split(";");
-					        }
+							matchstring = "";
+							ts2tmp = ts2TXing.split(";");
+						}
 
 						var rowIndexes = [],
 							timestamp = getTimestamp(line),
 							mode = getMode(line),
 							callsign = getCallsign(line),
-							target = ts2tmp[2],
+							target = "",
 							source = getSource(line),
 							duration = getDuration(line),
 							loss = getLoss(line),
 							ber = getBER(line),
 							addToQSO = getAddToQSO(line);
+						if (getMode(line) == "DMR Slot 1" ) {
+							target = ts1tmp[2];
+						} else {
+							target = ts2tmp[2];
+						}
 						if (txing) {
 							duration = "TXing";
 							loss = "";
