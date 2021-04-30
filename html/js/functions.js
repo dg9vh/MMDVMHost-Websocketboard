@@ -633,8 +633,8 @@ function getLastHeard(document, event) {
 		lines.forEach(function(line, index, array) {
 			if (!inDashboardBlacklist(line)) {
 				txing = false;
-				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0 || line.indexOf("transmission lost") > 0)) {
-					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("network header") > 0 || line.indexOf("received RF header") > 0) {
+				if (line.indexOf("Talker Alias") < 0 && line.indexOf("Downlink Activate") < 0 && line.indexOf("Preamble CSBK") < 0 && line.indexOf("data header") < 0 && line.indexOf("0000:") < 0 && line.length > 0 && (line.indexOf("received") > 0 || line.indexOf("network watchdog") > 0 || line.indexOf("transmission lost") > 0 || line.indexOf("network end of transmission") > 0)) {
+					if (line.indexOf("received network data") > 0 || line.indexOf("late entry") > 0 || line.indexOf("voice header") > 0 || line.indexOf("network header") > 0 || line.indexOf("received RF header") > 0 || line.indexOf("received RF voice") > 0 || line.indexOf("received network transmission") > 0) {
 						txing = true;
 						if (getMode(line) == "DMR Slot 1" ) {
 							ts1TXing = getMode(line) + ";" + line.substring(line.indexOf("from") + 5, line.indexOf("to")).trim() + ";" + getTarget(line)  + ";" + getSource(line);
@@ -644,7 +644,7 @@ function getLastHeard(document, event) {
 							ts2timestamp = getRawTimestamp(line);
 						}
 					}
-					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0 || line.indexOf("transmission lost") > 0 ) {
+					if (line.indexOf("network watchdog") > 0 || line.indexOf("end of voice transmission") > 0 || line.indexOf("end of transmission") > 0 || line.indexOf("transmission lost") > 0) {
 						txing = false;
 						if (line.indexOf("network watchdog") > 0) {
 							logIt("Network Watchdog!");
@@ -659,6 +659,7 @@ function getLastHeard(document, event) {
 									if(data[0] == getLocaltimeFromTimestamp(ts2timestamp)){
 										rowIndexes.push(idx);
 									}
+									return false;
 								}
 							});
 							if (getMode(line) == "DMR Slot 1" ) {
@@ -703,12 +704,12 @@ function getLastHeard(document, event) {
 						ts1tmp = [];
 						ts2tmp = [];
 						if (ts1TXing != null) {
-							matchstring = "";
 							ts1tmp = ts1TXing.split(";");
 						}
 						if (ts2TXing != null) {
-							matchstring = "";
 							ts2tmp = ts2TXing.split(";");
+							logIt("ts2tmp: " + ts2tmp);
+							logIt("ts2timestamp: " + ts2timestamp);
 						}
 
 						var rowIndexes = [],
@@ -726,6 +727,7 @@ function getLastHeard(document, event) {
 						} else {
 							target = ts2tmp[2];
 						}
+						logIt("TXing:" + txing);
 						if (txing) {
 							duration = "TXing";
 							loss = "";
@@ -747,11 +749,14 @@ function getLastHeard(document, event) {
 							addToQSO = "";
 						}
 						t_lh.rows( function ( idx, data, node ) {
-							if(data[2] == callsign){
+							//if(data[2] == callsign){
+							if(data[2].indexOf(callsign) > -1){
 								rowIndexes.push(idx);
 							}
 							return false;
 						});
+						
+						logIt("RowIndexes: " + rowIndexes);
 						if (rowIndexes[0] == "0") {
 							t_lh.row(rowIndexes[0]).remove().draw(false);
 						}
