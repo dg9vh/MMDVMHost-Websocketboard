@@ -5,6 +5,7 @@ var ts2TXing = null;
 var ts1timestamp = "";
 var ts2timestamp = "";
 var talkgroups = [];
+var BreakException = {};
 // Setting config-defaults if not set
 qrz = typeof(qrz) == 'undefined' ? 1 : qrz;
 debug = typeof(debug) == 'undefined' ? 0 : debug;
@@ -221,7 +222,7 @@ function resolveTarget(mode, timeslot, target) {
 		default:
 			break;
 	}
-	//if (retval.length > 0) {
+	
 	if (retval != null && retval != "") {
 		logIt("Retval: " + retval);
 		if (retval[0][4] != "") {
@@ -667,6 +668,11 @@ function getLastHeard(document, event) {
 										return false;
 									}
 								});
+								
+								if (rowIndexes.length == 0) {
+									throw BreakException;
+								}
+								
 								if (getMode(line) == "DMR Slot 1" ) {
 									duration = Math.round(Date.parse(getRawTimestamp(line).replace(" ","T")+".000Z")/1000 - Date.parse(ts1timestamp.replace(" ","T")+".000Z")/1000);
 								} else {
@@ -754,12 +760,16 @@ function getLastHeard(document, event) {
 								addToQSO = "";
 							}
 							t_lh.rows( function ( idx, data, node ) {
-								//if(data[2] == callsign){
 								if(data[2].indexOf(callsign) > -1){
 									rowIndexes.push(idx);
 								}
 								return false;
 							});
+							
+							if (rowIndexes.length == 0 && line.indexOf(" end of transmission") > 0) {
+								logIt("Sende-Ende ohne Anfang!");
+								throw BreakException;
+							}
 							
 							logIt("RowIndexes: " + rowIndexes);
 							if (rowIndexes[0] == "0") {
