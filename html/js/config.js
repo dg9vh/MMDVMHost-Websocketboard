@@ -1,5 +1,5 @@
 // config structure version, please change to value in github-file after update and adding new values
-var config_struc_ver = 20210421.1;
+var config_struc_ver = 20210501.1;
 
 // 1 = show link to QRZ.com, 0 = off
 var qrz = 1;
@@ -43,3 +43,10 @@ var dashboard_blacklist = [
 
 // 1 = enable dark display theme, 0 = use bright theme
 var useDarkTheme = 1;
+
+// Here you can put in your own html to be shown centered in the headline, to show no text, just set it to ``
+var customHeadlineText = `Custom-Headline-Text`;
+
+// Here you can put your own html to be shown between the header and the table-section, to show no text, just set it to ``
+var customText = `<h2>This is an example</h2>
+<p>you can use all html-tags and multiline-text.</p>`;

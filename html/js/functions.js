@@ -1,4 +1,4 @@
-var act_config_struc_ver = 20210321.1;
+var act_config_struc_ver = 20210501.1;
 var messagecount = 0;
 var ts1TXing = null;
 var ts2TXing = null;
