@@ -53,7 +53,7 @@ Actually known:
 * Change ownership to user mmdvm for example with `sudo chown -R mmdvm:mmdvm /opt/MMDVMDash`
 * Modify *logtailer.ini* to fit your needs
 * Modify */html/js/config.js* to fit your needs, here you can switch on/off tabs showing or enable debug for getting some output in javascript console. You should take a look into this file - here are different options you can configure.
-* Copy files in */opt/MMDVMDash/systemd* to */etc/systemd/system* or similar corresponding to your system
+* Copy files in */opt/MMDVMDash/systemd* to */lib/systemd/system* or similar corresponding to your system
 * Modify both scripts to fit your needs
 * Enable services with following commmands, this results in starting both automatically after reboot:
   * `sudo systemctl enable http.server.service`
