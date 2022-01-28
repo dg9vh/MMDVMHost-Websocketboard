@@ -21,6 +21,7 @@ from http import HTTPStatus
 import subprocess
 import time
 import serial
+import threading
 
 MIME_TYPES = {
     "html": "text/html",
@@ -40,6 +41,14 @@ callsigns = {}
 # init
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 conv = Ansi2HTMLConverter(inline=True)
+
+
+def reload_callsign_database():
+    while True:
+        time.sleep(60*int(config['MMDVMHost']['DMR_ID_Reload_Time']))
+        logging.info("Reloading DMR_IDs")
+        load_callsign_database()
+
 
 def getMMDVMVersion():
     mmdvm_version = "Actually not available"
@@ -375,31 +384,42 @@ def websocketserver():
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
 
+
+def load_callsign_database():
+    dmr_id_lookupfile = config['MMDVMHost']['DMR_ID_LookupFile']
+    if not os.path.isfile(dmr_id_lookupfile):
+        raise ValueError('File not found', format(dmr_id_lookupfile))
+    
+    f = open(dmr_id_lookupfile, 'r')
+    lines = f.readlines()
+    separator = "\t"
+    for line in lines:
+        if line.find(" "):
+            separator = " "
+        if line.find(";"):
+            separator = ";"
+        if line.find(","):
+            separator = ","
+        if line.find("\t"):
+            separator = "\t"
+        tokens = line.split(separator)
+        dmrids[tokens[0]] = tokens[1] + "$" + tokens[2].replace("\r", "").replace("\n", "") + "$"
+        callsigns[tokens[1]] = tokens[2].replace("\r", "").replace("\n", "")
+    logging.info("Loaded " + str(len(callsigns)) + " callsigns from " + dmr_id_lookupfile);
+    f.close()
+
+
 def main():
     dmr_id_lookup = config['MMDVMHost']['DMR_ID_Lookup']
-    dmr_id_lookupfile = config['MMDVMHost']['DMR_ID_LookupFile']
     
     if dmr_id_lookup == "1":
-        if not os.path.isfile(dmr_id_lookupfile):
-            raise ValueError('File not found', format(dmr_id_lookupfile))
-        
-        f = open(dmr_id_lookupfile, 'r')
-        lines = f.readlines()
-        separator = "\t"
-        for line in lines:
-            if line.find(" "):
-                separator = " "
-            if line.find(";"):
-                separator = ";"
-            if line.find(","):
-                separator = ","
-            if line.find("\t"):
-                separator = "\t"
-            tokens = line.split(separator)
-            dmrids[tokens[0]] = tokens[1] + "$" + tokens[2].replace("\r", "").replace("\n", "") + "$"
-            callsigns[tokens[1]] = tokens[2].replace("\r", "").replace("\n", "")
-    logging.info("Loaded " + str(len(callsigns)) + " callsigns from " + dmr_id_lookupfile);
+        logging.info("Loading DMR_IDs from file")
+        load_callsign_database()
+        t2 = threading.Thread(target=reload_callsign_database)  
+        t2.start()
+
     logging.info("Starting Websocketserver")
+
     websocketserver()
 
 
