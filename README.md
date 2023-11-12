@@ -1,5 +1,7 @@
 # MMDVMHost-Websocketboard
 
+_No further development and support!_
+
 ## Introduction
 This is a very first development version of my new MMDVMDashboard using websockets-technology to get rid of high load on Raspberry Pi and others and keep those temperature down.
 
